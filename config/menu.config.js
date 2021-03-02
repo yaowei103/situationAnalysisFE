@@ -1,5 +1,24 @@
 export default [
     {
+        title: "态势管理",
+        key: "taishi",
+        icon: "icon-baobiaofenxi",
+        children: [
+            {
+                title: "指标管理",
+                link: "/situation/indexManagement",
+                key: "zhibiao",
+                icon: "link"
+            },
+            {
+                title: "层次管理",
+                link: "/situation/arrangementManagement",
+                key: "cengci",
+                icon: "line-chart"
+            }
+        ]
+    },
+    {
         title: "gitDataV",
         link: "/sys/githubpro",
         key: "gitDataV",

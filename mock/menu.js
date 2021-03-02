@@ -1,6 +1,22 @@
 const Mock = require('mockjs');
 const menuData = [
     {
+        title: "态势管理",
+        key: "taishi",
+        children: [
+            {
+                title: "指标管理",
+                // link: "/situation/zhibiao",
+                key: "zhibiao",
+            },
+            {
+                title: "层次管理",
+                // link: "/situation/cengci",
+                key: "cengci",
+            }
+        ]
+    },
+    {
         title: "gitDataV",
         key: "gitDataV",
     },

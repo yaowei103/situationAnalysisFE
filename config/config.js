@@ -7,7 +7,7 @@ import theme from "./theme.config"
 export default {
   base: '/',
   treeShaking: true,//用于描述移除 JavaScript 上下文中的未引用代码
-  history: 'hash',//hash路由
+  history: 'browser',
   hash: true,//生成hash文件名
   //   disableRedirectHoist: true,//禁用 redirect 上提。
   // devtool: 'source-map',//生成map文件
