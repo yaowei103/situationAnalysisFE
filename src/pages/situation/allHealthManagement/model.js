@@ -1,7 +1,7 @@
 
 import * as api from './service';
 export default {
-    namespace: 'users',
+    namespace: 'objManagement',
     state: {
         path: undefined,
         list: [],
@@ -11,7 +11,7 @@ export default {
     subscriptions: {
         setupHistory({ dispatch, history }) {
             history.listen(({ pathname, query, state }) => { // eslint-disable-line
-                if (pathname === '/situation/indexManagement') {
+                if (pathname === '/situation/objManagement') {
                     dispatch({ type: 'fetch', payload: query });
                 }
             });
@@ -21,12 +21,12 @@ export default {
     effects: {
         *fetch({ payload: { page = 1 } }, { call, put }) {
             const result = yield call(api.fetch, { page });
-            const { data: list, } = result;
+            const { data: list, total } = result;
             yield put({
                 type: 'save',
                 payload: {
                     list,
-                    total: 30,
+                    total,
                     page: parseInt(page, 10),
                 },
             });

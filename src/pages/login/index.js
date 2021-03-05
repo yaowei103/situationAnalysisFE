@@ -43,11 +43,11 @@ class Index extends PureComponent {
     const { loading, isError } = this.props;
     return (
       <div className={styles.content}>
-        <Row>
+        {/* <Row>
           <Col span={24} className={styles.logo}>
             <img alt="logo" src={logo} />
           </Col>
-        </Row>
+        </Row> */}
         <h2 className={styles.title}>{loginName}</h2>
         <Login onSubmit={this.handleSubmit} loading={loading} isError={isError} />
       </div>

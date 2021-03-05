@@ -1,20 +1,32 @@
 export default [
     {
-        title: "态势管理",
+        title: "运行态势评估",
         key: "taishi",
         icon: "icon-baobiaofenxi",
         children: [
             {
-                title: "指标管理",
-                link: "/situation/indexManagement",
-                key: "zhibiao",
-                icon: "link"
+                title: "监测对象管理",
+                link: "/situation/objManagement",
+                key: "objManagement",
+                // icon: null
             },
             {
-                title: "层次管理",
-                link: "/situation/arrangementManagement",
-                key: "cengci",
-                icon: "line-chart"
+                title: "监测层次管理",
+                link: "/situation/arrangeManagement",
+                key: "arrangeManagement",
+                // icon: "link"
+            },
+            {
+                title: "业务系统健康度管理",
+                link: "/situation/bizSystemManagement",
+                key: "bizSystemManagement",
+                // icon: "link"
+            },
+            {
+                title: "全息健康度管理",
+                link: "/situation/allHealthManagement",
+                key: "allHealthManagement",
+                // icon: "link"
             }
         ]
     },
@@ -136,12 +148,6 @@ export default [
         icon: "user"
     },
     {
-        title: "404",
-        link: "/404",
-        key: "404",
-        icon: "frown"
-    },
-    {
         title: "iframe",
         key: "iframe",
         icon: "icon-chuangkouwindow30",
@@ -163,23 +169,5 @@ export default [
                 icon: "shop",
                 url: `https://www.baidu.com/`,
             },]
-    },
-    {
-        title: "watermark",
-        url: "https://mpw0311.github.io/watermark",
-        key: "watermark",
-        icon: "bar-chart"
-    },
-    {
-        title: "图形组件demo",
-        url: "https://mpw0311.github.io/react-charts",
-        key: "react-charts",
-        icon: "bar-chart"
-    },
-    {
-        title: "请给star",
-        url: "https://github.com/mpw0311/antd-umi-sys",
-        key: "github",
-        icon: "star"
-    },
+    }
 ];

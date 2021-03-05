@@ -4,10 +4,11 @@ import { Link } from 'umi';
 import { Table, Pagination, Popconfirm, Button } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
-import UserModal from '../components/Modal';
+// import UserModal from '../components/Modal';
+import TableSearch from '../components/TableSearch';
 
 
-function Users({ dispatch, list: dataSource, loading, total, page: current }) {
+function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: current }) {
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -33,34 +34,40 @@ function Users({ dispatch, list: dataSource, loading, total, page: current }) {
       payload: values,
     });
   }
-  /**
-   * id: '@id',
-        belongToObj: '@name',
-        testIndex: '@name',
-        indexDesc: Random.cparagraph(1),
-        operation: '@operation'
-   */
+  function handleSearch({ account }) {
+    this.props.dispatch({
+      type: 'githubPro/getAccountInfo',
+      payload: {
+        account
+      }
+    });
+  }
   const columns = [
     {
       title: '编号',
       dataIndex: 'id',
       key: 'id',
-      render: text => <Link to={`/sys/users/${text}`}>{text}</Link>,
+      // render: text => <Link to={`/sys/users/${text}`}>{text}</Link>,
     },
     {
-      title: '所属对象',
-      dataIndex: 'belongToObj',
-      key: 'belongToObj',
+      title: '所属层次',
+      dataIndex: 'belongToArrange',
+      key: 'belongToArrange',
     },
     {
-      title: '检测指标',
-      dataIndex: 'testIndex',
-      key: 'testIndex',
+      title: '检测对象',
+      dataIndex: 'monitorObj',
+      key: 'monitorObj',
     },
     {
-      title: '指标说明',
-      dataIndex: 'indexDesc',
-      key: 'indexDesc',
+      title: '统计指标',
+      dataIndex: 'statisticalIndicators',
+      key: 'statisticalIndicators',
+    },
+    {
+      title: '报警阈值',
+      dataIndex: 'alarmThreshold',
+      key: 'alarmThreshold',
     },
     {
       title: '操作',
@@ -85,12 +92,13 @@ function Users({ dispatch, list: dataSource, loading, total, page: current }) {
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        <UserModal
+        {/* <UserModal
           record={{}}
           onOk={createHandler}
         >
-          <Button type="primary">新增</Button>
-        </UserModal>
+          <Button type="primary">Create User</Button>
+        </UserModal> */}
+        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} />
       </div>
       <Table
         columns={columns}
@@ -111,7 +119,7 @@ function Users({ dispatch, list: dataSource, loading, total, page: current }) {
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.users;
+  const { list, total, page } = state.arrangeManagement;
   return {
     list,
     total,
@@ -119,4 +127,4 @@ function mapStateToProps(state) {
     loading: state.loading.models.users,
   };
 }
-export default connect(mapStateToProps)(Users);
+export default connect(mapStateToProps)(ArrangeManagement);

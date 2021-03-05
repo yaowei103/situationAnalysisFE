@@ -8,9 +8,9 @@ import { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Form, Icon, Input, Button, Checkbox, Modal } from 'antd';
 import { formatMessage } from 'umi/locale';
-import LoginQrcode from './loginQrcode';
+// import LoginQrcode from './loginQrcode';
 import styles from './index.less';
-import imgUrl from '@/assets/qrcode_for_wechat.jpg';
+// import imgUrl from '@/assets/qrcode_for_wechat.jpg';
 
 const FormItem = Form.Item;
 @connect(({ login }) => ({ isError: login.isError }))
@@ -32,37 +32,36 @@ class Login extends PureComponent {
       });
     }
   };
-  qrcodeClick() {
-    Modal.info({
-      title: '关注公众号即可获取登录密码',
-      content: (
-        <div>
-          <br />
-          <div style={{ textAlign: 'center' }}>
-            <img src={imgUrl} alt="公众号" width={120} />
-          </div>
-          <p style={{ textAlign: 'center' }}>关注有福利</p>
-        </div>
-      ),
-      onOk() {},
-      okText: '知道了',
-    });
-  }
+  // qrcodeClick() {
+  //   Modal.info({
+  //     title: '关注公众号即可获取登录密码',
+  //     content: (
+  //       <div>
+  //         <br />
+  //         <div style={{ textAlign: 'center' }}>
+  //           <img src={imgUrl} alt="公众号" width={120} />
+  //         </div>
+  //         <p style={{ textAlign: 'center' }}>关注有福利</p>
+  //       </div>
+  //     ),
+  //     onOk() {},
+  //     okText: '知道了',
+  //   });
+  // }
   componentDidMount() {
-    this.qrcodeClick();
+    // this.qrcodeClick();
   }
   render() {
     const { loading, form, isError } = this.props;
     const { getFieldDecorator: fd } = form;
     const error = isError
       ? {
-          validateStatus: 'error',
-          help: '用户名或密码错误',
-        }
+        validateStatus: 'error',
+        help: '用户名或密码错误',
+      }
       : {};
     return (
       <div className={styles.login_form}>
-        <LoginQrcode onClick={this.qrcodeClick} />
         <Form onSubmit={this.handleSubmit}>
           <FormItem {...error}>
             {fd('username', {
@@ -99,9 +98,9 @@ class Login extends PureComponent {
               valuePropName: 'checked',
               initialValue: true,
             })(<Checkbox>{formatMessage({ id: 'login.remember-me' })}</Checkbox>)}
-            <a className={styles.login_form_forgot} href="/">
+            {/* <a className={styles.login_form_forgot} href="/">
               {formatMessage({ id: 'login.forgot-password' })}
-            </a>
+            </a> */}
             <Button
               type="primary"
               htmlType="submit"
@@ -110,7 +109,7 @@ class Login extends PureComponent {
             >
               {formatMessage({ id: 'login.login' })}
             </Button>
-            <a href="/#register"> {formatMessage({ id: 'login.signup' })}!</a>
+            {/* <a href="/#register"> {formatMessage({ id: 'login.signup' })}!</a> */}
           </FormItem>
         </Form>
       </div>
