@@ -87,13 +87,17 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
       key: 'operation',
       render: (text, record) => (
         <span className={styles.operation}>
-          <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
-            <a href="/">Edit</a>
-          </UserModal>
           {
-            record.operation
+            record.operationEdit
+              ? <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
+                <a href="/">编辑</a>
+              </UserModal>
+              : ''
+          }
+          {
+            record.operationDelete
               ? <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
-                <a href="/">Delete</a>
+                <a href="/">删除</a>
               </Popconfirm>
               : ''
           }

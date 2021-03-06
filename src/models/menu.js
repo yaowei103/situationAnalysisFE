@@ -26,6 +26,7 @@ export default {
             let menusData = yield select(({ menu }) => menu.menuData);
             if (!(menusData && menusData.length > 0)) {
                 const { data = [] } = yield call(api.getMenuData, {});
+                debugger;
                 const { menusData, diffMenuData } = munesFilter(orginalData, data, menuPermission);
                 const flattenMenuData = flattenMenu(menusData);
                 yield put({

@@ -14,7 +14,7 @@ let indexList = Mock.mock({
 });
 
 module.exports = {
-  [`GET /api/indexList`](req, res) {
+  [`GET /api/objList`](req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.status(200).json({
       total: 30,
@@ -139,7 +139,7 @@ module.exports = {
           platform: '解析系统2',
           alarmThreshold: '60',
           operationEdit: true,
-          operationDelete: false
+          operationDelete: true
         },
       ]
     });

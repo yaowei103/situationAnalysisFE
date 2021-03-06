@@ -6,6 +6,7 @@ import theme from "./theme.config"
 
 export default {
   base: '/',
+  mock: false,
   treeShaking: true,//用于描述移除 JavaScript 上下文中的未引用代码
   history: 'browser',
   hash: true,//生成hash文件名
@@ -70,12 +71,12 @@ export default {
     // request请求
     "@http": resolve(__dirname, '../src/utils/request.js')
   },
-  theme,
-  proxy: {
-    "/api": {
-      target: "",
-      changeOrigin: true,
-      pathRewrite: { "^/api": "" }
-    }
-  },
+  theme
+  // proxy: {
+  //   "/api": {
+  //     target: "",
+  //     changeOrigin: true,
+  //     pathRewrite: { "^/api": "" }
+  //   }
+  // },
 }

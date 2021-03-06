@@ -8,6 +8,19 @@ import fetch from 'dva/fetch';
 import { message, notification } from 'antd';
 import router from 'umi/router';
 import { apiPrefix } from '@platformConfig';
+
+// mock data
+import loginData from '../services/envMockData/loginData';
+import menuData from '../services/envMockData/menuData';
+import sysInfoData from '../services/envMockData/sysInfoData';
+import messageData from '../services/envMockData/messageData';
+import logoutData from '../services/envMockData/logoutData';
+
+import objList from '../services/envMockData/objList';
+import arrangeListData from '../services/envMockData/arrangeListData';
+import bizSystemListData from '../services/envMockData/bizSystemListData';
+// mock data end
+
 const logout = () => {
     // @HACK
     /* eslint-disable no-underscore-dangle */
@@ -56,7 +69,15 @@ const checkStatus = response => {
     error.response = response;
     throw error;
 };
-export const request = async (url, options = {}) => {
+const createStubResponse = (stubRes, waitTime = 200) => {
+    const promise = new Promise((resolve, reject) => {
+        // setTimeout(() => {
+        resolve(stubRes);
+        // }, waitTime);
+    });
+    return promise;
+};
+export const request = (url, options = {}) => {
 
     const { method, headers, body } = options;
     if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
@@ -75,42 +96,70 @@ export const request = async (url, options = {}) => {
             };
         }
     }
-    const response = await fetch(apiPrefix + url, options)
-        .then(checkStatus)
-        .then(response => {
-            // DELETE and 204 do not return data by default
-            // using .json will report an error.
-            if (options.method === 'DELETE' || response.status === 204) {
-                return response.text();
-            }
-            return response.json();
-        })
-        .catch(e => {
-            const { name: status } = e;
-            if (status === 401) {
-                logout();
-                return;
-            }
-            // environment should not be used
-            if (status === 403) {
-                router.push('/403');
-                return;
-            }
-            if (status <= 504 && status >= 500) {
-                router.push('/500');
-                return;
-            }
-            if (status >= 404 && status < 422) {
-                router.push('/404');
-                return;
-            }
-            if (status === 'SyntaxError') {
-                message.error(`SyntaxError:${e.message}`);
-                setTimeout(() => {
-                    logout();
-                }, 1500);
-            }
+    let response = {};
+    console.log('---------url', url);
+    if (url.indexOf('/objList') >= 0) {
+        response = createStubResponse(objList);
+    } else if (url.indexOf('/arrangeList') >= 0) {
+        response = createStubResponse(arrangeListData);
+    } else if (url.indexOf('/bizSystemList') >= 0) {
+        response = createStubResponse(bizSystemListData);
+    } else if (url.indexOf('/login') >= 0) {
+        console.log('loginRes::::', loginData);
+        response = createStubResponse(loginData);
+    } else if (url.indexOf('/getMenuData') >= 0) {
+        response = createStubResponse(menuData)
+    } else if (url.indexOf('/getSysInfo') >= 0) {
+        response = createStubResponse(sysInfoData)
+    } else if (url.indexOf('/getMessage') >= 0) {
+        response = createStubResponse(messageData)
+    } else if (url.indexOf('/logout') >= 0) {
+        response = createStubResponse(logoutData);
+    } else {
+        response = createStubResponse({
+            data: {
+
+            },
+            status: 0
         });
+        // console.log('request url:', apiPrefix + url, 'options:', options);
+        // response = await fetch(apiPrefix + url, options)
+        //     .then(checkStatus)
+        //     .then(response => {
+        //         // DELETE and 204 do not return data by default
+        //         // using .json will report an error.
+        //         if (options.method === 'DELETE' || response.status === 204) {
+        //             return response.text();
+        //         }
+        //         return response.json();
+        //     })
+        //     .catch(e => {
+        //         const { name: status } = e;
+        //         if (status === 401) {
+        //             logout();
+        //             return;
+        //         }
+        //         // environment should not be used
+        //         if (status === 403) {
+        //             router.push('/403');
+        //             return;
+        //         }
+        //         if (status <= 504 && status >= 500) {
+        //             router.push('/500');
+        //             return;
+        //         }
+        //         if (status >= 404 && status < 422) {
+        //             router.push('/404');
+        //             return;
+        //         }
+        //         if (status === 'SyntaxError') {
+        //             message.error(`SyntaxError:${e.message}`);
+        //             setTimeout(() => {
+        //                 logout();
+        //             }, 1500);
+        //         }
+        //     });
+    }
     return response;
 }
 export default async (url, options) => {

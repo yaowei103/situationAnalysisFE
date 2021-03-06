@@ -17,7 +17,9 @@ export default {
     effects: {
         *login({ payload }, { call, put }) {
             const { password, ...rest } = payload;
-            const { status } = yield call(api.login, { password: encrypt(password), ...rest });
+            const response = yield call(api.login, { password: encrypt(password), ...rest });
+            const { status } = response;
+            console.log('loginRes:', response);
             if (status === 0) {
                 sessionStorage.setItem("isLogin", true);
                 yield put(routerRedux.push('/sys'));

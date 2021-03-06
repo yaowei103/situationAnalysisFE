@@ -8,8 +8,19 @@ service nginx reload
 service nginx status
 
 
-
-
+nginx.conf
+server {
+    listen       8088;
+    server_name  localhost;
+    location / {
+        root   /webapp/situationFE;
+        index  index.html index.htm;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+}
 
 
 https://www.cnblogs.com/gzyx1988/p/4939088.html
