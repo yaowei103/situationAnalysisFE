@@ -19,6 +19,7 @@ import logoutData from '../services/envMockData/logoutData';
 import objList from '../services/envMockData/objList';
 import arrangeListData from '../services/envMockData/arrangeListData';
 import bizSystemListData from '../services/envMockData/bizSystemListData';
+import allHealthListData from '../services/envMockData/allHealthListData'
 // mock data end
 
 const logout = () => {
@@ -104,6 +105,8 @@ export const request = (url, options = {}) => {
         response = createStubResponse(arrangeListData);
     } else if (url.indexOf('/bizSystemList') >= 0) {
         response = createStubResponse(bizSystemListData);
+    } else if (url.indexOf('/allHealthList') >= 0) {
+        response = createStubResponse(allHealthListData);
     } else if (url.indexOf('/login') >= 0) {
         console.log('loginRes::::', loginData);
         response = createStubResponse(loginData);

@@ -1,7 +1,7 @@
 import { request } from '@utils';
 
-export function fetch({ page }) {
-  return request(`/api/indexList?_page=${page}&_limit=${10}`, {
+export function fetch() {
+  return request(`/api/allHealthList`, {
     method: 'GET',
   });
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Link } from 'umi';
+// import { Link } from 'umi';
 import { Table, Pagination, Popconfirm, Button } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
@@ -35,7 +35,7 @@ function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: c
     });
   }
   function handleSearch({ account }) {
-    this.props.dispatch({
+    dispatch({
       type: 'githubPro/getAccountInfo',
       payload: {
         account

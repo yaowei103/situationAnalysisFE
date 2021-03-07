@@ -1,4 +1,4 @@
-
+ssh root@106.12.165.67
 /webapp/situationAnalysisFE
 
 service nginx start

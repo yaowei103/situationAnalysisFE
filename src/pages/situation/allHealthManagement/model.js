@@ -1,17 +1,16 @@
 
 import * as api from './service';
 export default {
-    namespace: 'objManagement',
+    namespace: 'allHealth',
     state: {
         path: undefined,
-        list: [],
-        total: null,
-        page: null,
+        objConfigArr: [],
+        list: []
     },
     subscriptions: {
         setupHistory({ dispatch, history }) {
-            history.listen(({ pathname, query, state }) => { // eslint-disable-line
-                if (pathname === '/situation/objManagement') {
+            history.listen(({ pathname, query, state }) => {
+                if (pathname === '/situation/allHealthManagement') {
                     dispatch({ type: 'fetch', payload: query });
                 }
             });
@@ -21,13 +20,12 @@ export default {
     effects: {
         *fetch({ payload: { page = 1 } }, { call, put }) {
             const result = yield call(api.fetch, { page });
-            const { data: list, total } = result;
+            const { list, objConfigArr } = result.data;
             yield put({
                 type: 'save',
                 payload: {
                     list,
-                    total,
-                    page: parseInt(page, 10),
+                    objConfigArr
                 },
             });
         },

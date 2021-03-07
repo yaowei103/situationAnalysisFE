@@ -82,7 +82,7 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
           </UserModal> */}
           {
             record.operation
-              ? <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
+              ? <Popconfirm title="确认删除吗？" onConfirm={deleteHandler.bind(null, record.id)}>
                 <a href="/">删除</a>
               </Popconfirm>
               : ''

@@ -1,0 +1,40 @@
+.healthItem {
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+.itemRow {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+}
+.select {
+  width: 100%;
+}
+.col {
+  /* flex-grow: 1; */
+  display: flex;
+  align-items: center;
+  margin-right: 30px;
+  line-height: 23px;
+}
+.createBtn {
+  margin-left: 15px;
+}
+.underLine {
+  /* text-decoration: underline; */
+  border-bottom: 1px solid #c5c5c5;
+  flex-grow: 1;
+}
+
+.middle {
+  margin-bottom: 15px;
+
+}
+.middle button {
+  margin-left: 15px;
+}
+.bottom {
+
+}
