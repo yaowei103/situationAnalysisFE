@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input, Select } from 'antd';
+const { TextArea } = Input;
 
 const FormItem = Form.Item;
-class UserEditModal extends Component {
+class CreateIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +45,7 @@ class UserEditModal extends Component {
           {children}
         </span>
         <Modal
-          title="新增指标"
+          title="指标管理"
           visible={this.state.visible}
           onOk={this.okHandler}
           onCancel={this.hideModalHandler}
@@ -52,17 +53,7 @@ class UserEditModal extends Component {
           <Form onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
-              label="所属对象"
-            >
-              {
-                getFieldDecorator('belongToObj', {
-                  initialValue: belongToObj,
-                })(<Input />)
-              }
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="监测指标"
+              label="指标名称"
             >
               {
                 getFieldDecorator('testIndex', {
@@ -72,12 +63,22 @@ class UserEditModal extends Component {
             </FormItem>
             <FormItem
               {...formItemLayout}
+              label="所属对象"
+            >
+              {
+                getFieldDecorator('belongToObj', {
+                  initialValue: belongToObj,
+                })(<Select />)
+              }
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
               label="指标说明"
             >
               {
                 getFieldDecorator('indexDesc', {
                   initialValue: indexDesc,
-                })(<Input />)
+                })(<TextArea />)
               }
             </FormItem>
           </Form>
@@ -86,4 +87,4 @@ class UserEditModal extends Component {
     );
   }
 }
-export default Form.create()(UserEditModal);
+export default Form.create()(CreateIndex);

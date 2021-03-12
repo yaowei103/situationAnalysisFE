@@ -5,15 +5,15 @@ export default [
         icon: "icon-baobiaofenxi",
         children: [
             {
-                title: "监测对象管理",
-                link: "/situation/objManagement",
-                key: "objManagement",
+                title: "运行指标管理",
+                link: "/situation/indexManagement",
+                key: "indexManagement",
                 // icon: null
             },
             {
-                title: "监测层次管理",
-                link: "/situation/arrangeManagement",
-                key: "arrangeManagement",
+                title: "监测对象管理",
+                link: "/situation/objManagement",
+                key: "objManagement",
                 // icon: "link"
             },
             {

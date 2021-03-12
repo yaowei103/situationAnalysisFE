@@ -38,3 +38,11 @@
 .bottom {
 
 }
+.rowMarginBottom {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+}
+.removeFormItemMargin {
+  margin-bottom: 5px;
+}

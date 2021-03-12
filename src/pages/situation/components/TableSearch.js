@@ -1,7 +1,8 @@
 import { PureComponent } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 // import { formatMessage } from 'umi/locale';
-import UserModal from '../components/Modal';
+import CreateIndex from './CreateIndex';
+import CreateObj from './CreateObj';
 
 class TableSearch extends PureComponent {
   handleSubmit = (e) => {
@@ -21,8 +22,38 @@ class TableSearch extends PureComponent {
       payload: values,
     });
   }
+  renderCreateComponent = (createType) => {
+    if (createType === 'index') {
+      return (
+        <CreateIndex
+          record={{}}
+          onOk={() => { this.createHandler(createType) }}
+        >
+          <Button type="primary">新增</Button>
+        </CreateIndex>
+      );
+    } else if (createType === 'obj') {
+      return (
+        <CreateObj
+          record={{}}
+          onOk={() => { this.createHandler(createType) }}
+        >
+          <Button type="primary">新增</Button>
+        </CreateObj>
+      );
+    } else if (createType === 'arrange') {
+      return (
+        <CreateIndex
+          record={{}}
+          onOk={() => { this.createHandler(createType) }}
+        >
+          <Button type="primary">新增</Button>
+        </CreateIndex>
+      );
+    }
+  }
   render() {
-    const { form, value: defaultValue } = this.props;
+    const { form, value: defaultValue, createType } = this.props;
     const {
       getFieldDecorator,
     } = form;
@@ -47,13 +78,9 @@ class TableSearch extends PureComponent {
           </Button>
         </Form.Item>
         <Form.Item>
-          <UserModal
-            record={{}}
-            onOk={this.createHandler}
-          >
-            {/* <TableSearch value="12345" onSubmit={handleSearch} /> */}
-            <Button type="primary">新增</Button>
-          </UserModal>
+          {
+            this.renderCreateComponent(createType)
+          }
         </Form.Item>
       </Form>
     );

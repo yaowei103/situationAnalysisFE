@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
-import { Table, Pagination, Popconfirm, Button } from 'antd';
+import { Table, Pagination, Popconfirm, Button, Input, Icon } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
-// import UserModal from '../components/Modal';
 import TableSearch from '../components/TableSearch';
 
 
-function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: current }) {
+function IndexManagement({ dispatch, list: dataSource, loading, total, page: current }) {
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -35,13 +34,14 @@ function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: c
     });
   }
   function handleSearch({ account }) {
-    dispatch({
+    this.props.dispatch({
       type: 'githubPro/getAccountInfo',
       payload: {
         account
       }
     });
   }
+
   const columns = [
     {
       title: '编号',
@@ -50,24 +50,19 @@ function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: c
       // render: text => <Link to={`/sys/users/${text}`}>{text}</Link>,
     },
     {
-      title: '所属层次',
-      dataIndex: 'belongToArrange',
-      key: 'belongToArrange',
+      title: '所属对象',
+      dataIndex: 'belongToObj',
+      key: 'belongToObj',
     },
     {
-      title: '检测对象',
-      dataIndex: 'monitorObj',
-      key: 'monitorObj',
+      title: '监测指标',
+      dataIndex: 'monitorIndex',
+      key: 'monitorIndex',
     },
     {
-      title: '统计指标',
-      dataIndex: 'statisticalIndicators',
-      key: 'statisticalIndicators',
-    },
-    {
-      title: '报警阈值',
-      dataIndex: 'alarmThreshold',
-      key: 'alarmThreshold',
+      title: '指标说明',
+      dataIndex: 'indexDesc',
+      key: 'indexDesc',
     },
     {
       title: '操作',
@@ -75,12 +70,9 @@ function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: c
       key: 'operation',
       render: (text, record) => (
         <span className={styles.operation}>
-          {/* <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
-            <a href="/">Edit</a>
-          </UserModal> */}
           {
             record.operation
-              ? <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
+              ? <Popconfirm title="确认删除吗？" onConfirm={deleteHandler.bind(null, record.id)}>
                 <a href="/">删除</a>
               </Popconfirm>
               : ''
@@ -92,13 +84,7 @@ function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: c
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        {/* <UserModal
-          record={{}}
-          onOk={createHandler}
-        >
-          <Button type="primary">Create User</Button>
-        </UserModal> */}
-        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} />
+        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} createType="index" />
       </div>
       <Table
         columns={columns}
@@ -119,7 +105,7 @@ function ArrangeManagement({ dispatch, list: dataSource, loading, total, page: c
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.arrangeManagement;
+  const { list, total, page } = state.indexManagement;
   return {
     list,
     total,
@@ -127,4 +113,4 @@ function mapStateToProps(state) {
     loading: state.loading.models.users,
   };
 }
-export default connect(mapStateToProps)(ArrangeManagement);
+export default connect(mapStateToProps)(IndexManagement);

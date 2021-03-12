@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
-import { Table, Pagination, Popconfirm, Button, Input, Icon } from 'antd';
+import { Table, Pagination, Popconfirm, Button } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
 // import UserModal from '../components/Modal';
@@ -35,20 +35,13 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
     });
   }
   function handleSearch({ account }) {
-    this.props.dispatch({
+    dispatch({
       type: 'githubPro/getAccountInfo',
       payload: {
         account
       }
     });
   }
-  /**
-   * id: '@id',
-        belongToObj: '@name',
-        testIndex: '@name',
-        indexDesc: Random.cparagraph(1),
-        operation: '@operation'
-   */
   const columns = [
     {
       title: '编号',
@@ -57,19 +50,24 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       // render: text => <Link to={`/sys/users/${text}`}>{text}</Link>,
     },
     {
-      title: '所属对象',
-      dataIndex: 'belongToObj',
-      key: 'belongToObj',
+      title: '所属层次',
+      dataIndex: 'belongToArrange',
+      key: 'belongToArrange',
     },
     {
-      title: '监测指标',
-      dataIndex: 'monitorIndex',
-      key: 'monitorIndex',
+      title: '检测对象',
+      dataIndex: 'monitorObj',
+      key: 'monitorObj',
     },
     {
-      title: '指标说明',
-      dataIndex: 'indexDesc',
-      key: 'indexDesc',
+      title: '统计指标',
+      dataIndex: 'statisticalIndicators',
+      key: 'statisticalIndicators',
+    },
+    {
+      title: '报警阈值',
+      dataIndex: 'alarmThreshold',
+      key: 'alarmThreshold',
     },
     {
       title: '操作',
@@ -82,7 +80,7 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
           </UserModal> */}
           {
             record.operation
-              ? <Popconfirm title="确认删除吗？" onConfirm={deleteHandler.bind(null, record.id)}>
+              ? <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
                 <a href="/">删除</a>
               </Popconfirm>
               : ''
@@ -94,13 +92,7 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        {/* <UserModal
-          record={{}}
-          onOk={createHandler}
-        > */}
-        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} />
-        {/* <Button type="primary">新增</Button>
-        </UserModal> */}
+        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} createType="obj" />
       </div>
       <Table
         columns={columns}

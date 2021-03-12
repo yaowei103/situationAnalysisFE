@@ -5,12 +5,12 @@ export default {
       key: "taishi",
       children: [
         {
-          title: "监测对象管理",
-          key: "objManagement",
+          title: "运行指标管理",
+          key: "indexManagement",
         },
         {
-          title: "监测层次管理",
-          key: "arrangeManagement",
+          title: "监测对象管理",
+          key: "objManagement",
         },
         {
           title: "业务系统健康度管理",

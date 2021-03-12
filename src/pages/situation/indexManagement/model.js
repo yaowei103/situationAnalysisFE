@@ -1,7 +1,7 @@
 
 import * as api from './service';
 export default {
-    namespace: 'arrangeManagement',
+    namespace: 'indexManagement',
     state: {
         path: undefined,
         list: [],
@@ -11,7 +11,7 @@ export default {
     subscriptions: {
         setupHistory({ dispatch, history }) {
             history.listen(({ pathname, query, state }) => { // eslint-disable-line
-                if (pathname === '/situation/arrangeManagement') {
+                if (pathname === '/situation/indexManagement') {
                     dispatch({ type: 'fetch', payload: query });
                 }
             });

@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { Table, Pagination, Popconfirm, Button, Input, Icon } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
-import UserModal from '../components/Modal';
+import UserModal from '../components/CreateIndex';
 import TableSearch from '../components/TableSearch';
 
 

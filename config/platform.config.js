@@ -27,14 +27,14 @@ module.exports = {
     iconUrl: '//at.alicdn.com/t/font_1030595_depmdbpf3yc.js',
     // 系统默认首页
     sysDefultPage: {
-        pathname: '/situation/objManagement',
+        pathname: '/situation/indexManagement',
         state: {
             key: 'zhibiao',
             pathtitles: [{ title: '指标管理', icon: 'link' }],
         }
     },
     situationDefultPage: {
-        pathname: '/situation/objManagement',
+        pathname: '/situation/indexManagement',
         state: {
             key: 'zhibiao',
             pathtitles: [{ title: '指标管理', icon: 'link' }],

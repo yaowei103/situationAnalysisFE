@@ -1,7 +1,7 @@
 import { request } from '@utils';
 
 export function fetch({ page }) {
-  return request(`/api/objList?_page=${page}&_limit=${10}`, {
+  return request(`/api/arrangeList?_page=${page}&_limit=${10}`, {
     method: 'GET',
   });
 }

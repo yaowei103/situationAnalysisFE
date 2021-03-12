@@ -8,7 +8,7 @@ import styles from './index.css';
 import HealthItem from '../components/healthItem';
 
 
-function ObjManagement({ dispatch, list, objConfigArr }) {
+function IndexManagement({ dispatch, list, objConfigArr }) {
   function deleteItem() {
 
   }
@@ -39,4 +39,4 @@ function mapStateToProps(state) {
     loading: state.loading.models.users,
   };
 }
-export default connect(mapStateToProps)(ObjManagement);
+export default connect(mapStateToProps)(IndexManagement);
