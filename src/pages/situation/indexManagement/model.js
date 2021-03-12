@@ -12,15 +12,15 @@ export default {
         setupHistory({ dispatch, history }) {
             history.listen(({ pathname, query, state }) => { // eslint-disable-line
                 if (pathname === '/situation/indexManagement') {
-                    dispatch({ type: 'fetch', payload: query });
+                    dispatch({ type: 'fetchIndex', payload: query });
                 }
             });
         },
     },
 
     effects: {
-        *fetch({ payload: { page = 1 } }, { call, put }) {
-            const result = yield call(api.fetch, { page });
+        *fetchIndex({ payload: { page = 1, searchParam } }, { call, put }) {
+            const result = yield call(api.fetchIndex, { page, searchParam });
             const { data: list, total } = result;
             yield put({
                 type: 'save',
@@ -31,22 +31,26 @@ export default {
                 },
             });
         },
-        *removeuser({ payload: id }, { call, put }) {
-            yield call(api.remove, id);
-            yield put({ type: 'reload' });
+        *removeIndex({ payload: id }, { call, put }) {
+            yield call(api.removeIndex, id);
+            // yield put({ type: 'reload' });
         },
-        *patch({ payload: { id, values } }, { call, put }) {
-            yield call(api.patch, id, values);
-            yield put({ type: 'reload' });
+        *createIndex({ payload: values }, { call, put }) {
+            yield call(api.createIndex, values);
+            // yield put({ type: 'reload' });
         },
-        *create({ payload: values }, { call, put }) {
-            yield call(api.create, values);
-            yield put({ type: 'reload' });
-        },
-        *reload(action, { put, select }) {
-            const page = yield select(state => state.users.page);
-            yield put({ type: 'fetch', payload: { page } });
-        },
+        // *patch({ payload: { id, values } }, { call, put }) {
+        //     yield call(api.patch, id, values);
+        //     yield put({ type: 'reload' });
+        // },
+        // *create({ payload: values }, { call, put }) {
+        //     yield call(api.create, values);
+        //     yield put({ type: 'reload' });
+        // },
+        // *reload(action, { put, select }) {
+        //     const page = yield select(state => state.users.page);
+        //     yield put({ type: 'fetch', payload: { page } });
+        // },
     },
 
     reducers: {

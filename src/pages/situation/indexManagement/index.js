@@ -11,7 +11,7 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
-      type: 'users/removeuser',
+      type: 'indexManagement/removeIndex',
       payload: id,
     });
   }
@@ -33,11 +33,11 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
       payload: values,
     });
   }
-  function handleSearch({ account }) {
-    this.props.dispatch({
-      type: 'githubPro/getAccountInfo',
+  function handleSearch({ searchParam }) {
+    dispatch({
+      type: 'indexManagement/fetchIndex',
       payload: {
-        account
+        searchParam
       }
     });
   }
@@ -84,7 +84,7 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} createType="index" />
+        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="index" />
       </div>
       <Table
         columns={columns}

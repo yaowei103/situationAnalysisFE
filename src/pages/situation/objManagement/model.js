@@ -12,15 +12,15 @@ export default {
         setupHistory({ dispatch, history }) {
             history.listen(({ pathname, query, state }) => { // eslint-disable-line
                 if (pathname === '/situation/objManagement') {
-                    dispatch({ type: 'fetch', payload: query });
+                    dispatch({ type: 'fetchObj', payload: query });
                 }
             });
         },
     },
 
     effects: {
-        *fetch({ payload: { page = 1 } }, { call, put }) {
-            const result = yield call(api.fetch, { page });
+        *fetchObj({ payload: { page = 1, searchParam } }, { call, put }) {
+            const result = yield call(api.fetchObj, { page, searchParam });
             const { data: list, total } = result;
             yield put({
                 type: 'save',
@@ -31,16 +31,16 @@ export default {
                 },
             });
         },
-        *removeuser({ payload: id }, { call, put }) {
-            yield call(api.remove, id);
+        *removeObj({ payload: id }, { call, put }) {
+            yield call(api.removeObj, id);
             yield put({ type: 'reload' });
         },
-        *patch({ payload: { id, values } }, { call, put }) {
-            yield call(api.patch, id, values);
-            yield put({ type: 'reload' });
-        },
-        *create({ payload: values }, { call, put }) {
-            yield call(api.create, values);
+        // *patch({ payload: { id, values } }, { call, put }) {
+        //     yield call(api.patch, id, values);
+        //     yield put({ type: 'reload' });
+        // },
+        *createObj({ payload: values }, { call, put }) {
+            yield call(api.createObj, values);
             yield put({ type: 'reload' });
         },
         *reload(action, { put, select }) {

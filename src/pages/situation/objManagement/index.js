@@ -12,7 +12,7 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
-      type: 'users/removeuser',
+      type: 'objManagement/removeObj',
       payload: id,
     });
   }
@@ -22,23 +22,18 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       payload: { page },
     });
   }
-  function editHandler(id, values) {
-    dispatch({
-      type: 'users/patch',
-      payload: { id, values },
-    });
-  }
+
   function createHandler(values) {
     dispatch({
       type: 'users/create',
       payload: values,
     });
   }
-  function handleSearch({ account }) {
+  function handleSearch({ searchParam }) {
     dispatch({
-      type: 'githubPro/getAccountInfo',
+      type: 'objManagement/fetchObj',
       payload: {
-        account
+        searchParam
       }
     });
   }
@@ -92,7 +87,7 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} createType="obj" />
+        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="obj" />
       </div>
       <Table
         columns={columns}

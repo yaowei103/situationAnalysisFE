@@ -5,20 +5,26 @@ import CreateIndex from './CreateIndex';
 import CreateObj from './CreateObj';
 
 class TableSearch extends PureComponent {
-  handleSubmit = (e) => {
+  handleSearch = (e) => {
     e.preventDefault();
-    const { form, onSubmit } = this.props;
+    const { form, onSearch } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        onSubmit && onSubmit(values);
+        onSearch && onSearch(values);
       }
     });
   }
-  createHandler = (values) => {
+  createHandler = (values, createType) => {
     const { dispatch } = this.props;
+    const createMap = {
+      index: 'indexManagement/createIndex',
+      obj: 'objManagement/createObj',
+      arrange: 'arrangeManagement/createArrange',
+    };
+    debugger;
     dispatch({
-      type: 'users/create',
+      type: createMap[createType],
       payload: values,
     });
   }
@@ -27,7 +33,7 @@ class TableSearch extends PureComponent {
       return (
         <CreateIndex
           record={{}}
-          onOk={() => { this.createHandler(createType) }}
+          onOk={(values) => { this.createHandler(values, createType) }}
         >
           <Button type="primary">新增</Button>
         </CreateIndex>
@@ -36,7 +42,7 @@ class TableSearch extends PureComponent {
       return (
         <CreateObj
           record={{}}
-          onOk={() => { this.createHandler(createType) }}
+          onOk={(values) => { this.createHandler(values, createType) }}
         >
           <Button type="primary">新增</Button>
         </CreateObj>
@@ -45,7 +51,7 @@ class TableSearch extends PureComponent {
       return (
         <CreateIndex
           record={{}}
-          onOk={() => { this.createHandler(createType) }}
+          onOk={(values) => { this.createHandler(values, createType) }}
         >
           <Button type="primary">新增</Button>
         </CreateIndex>
@@ -58,10 +64,10 @@ class TableSearch extends PureComponent {
       getFieldDecorator,
     } = form;
     return (
-      <Form layout="inline" onSubmit={this.handleSubmit}>
+      <Form layout="inline" onSubmit={this.handleSearch}>
         <Form.Item
         >
-          {getFieldDecorator('account', {
+          {getFieldDecorator('searchParam', {
             initialValue: defaultValue,
             rules: [{ required: false, message: 'Please input the word' }],
           })(

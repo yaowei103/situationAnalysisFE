@@ -33,7 +33,7 @@ class CreateIndex extends Component {
   render() {
     const { children, form, record } = this.props;
     const { getFieldDecorator } = form;
-    const { id, belongToObj, testIndex, indexDesc } = record;
+    const { id, belongToObj, indexName, indexDesc } = record;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -46,6 +46,7 @@ class CreateIndex extends Component {
         </span>
         <Modal
           title="指标管理"
+          id={id}
           visible={this.state.visible}
           onOk={this.okHandler}
           onCancel={this.hideModalHandler}
@@ -56,8 +57,8 @@ class CreateIndex extends Component {
               label="指标名称"
             >
               {
-                getFieldDecorator('testIndex', {
-                  initialValue: testIndex,
+                getFieldDecorator('indexName', {
+                  initialValue: indexName,
                 })(<Input />)
               }
             </FormItem>

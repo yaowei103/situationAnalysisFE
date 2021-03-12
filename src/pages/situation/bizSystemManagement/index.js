@@ -12,31 +12,31 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
-      type: 'users/removeuser',
+      type: 'bizSystemManagement/removeBizSys',
       payload: id,
     });
   }
   function pageChangeHandler(page) {
     dispatch({
-      type: 'users/fetch',
+      type: 'bizSystemManagement/fetch',
       payload: { page },
     });
   }
   function editHandler(id, values) {
     dispatch({
-      type: 'users/patch',
+      type: 'bizSystemManagement/patch',
       payload: { id, values },
     });
   }
   function createHandler(values) {
     dispatch({
-      type: 'users/create',
+      type: 'bizSystemManagement/create',
       payload: values,
     });
   }
   function handleSearch({ account }) {
     this.props.dispatch({
-      type: 'githubPro/getAccountInfo',
+      type: 'bizSystemManagement/getAccountInfo',
       payload: {
         account
       }

@@ -1,22 +1,22 @@
 import { request } from '@utils';
 
-export function fetch({ page }) {
-  return request(`/api/objList?_page=${page}&_limit=${10}`, {
+export function fetchIndex({ page, searchParam }) {
+  return request(`/api/objList?_page=${page}&_limit=${10}&_searchParam=${searchParam}`, {
     method: 'GET',
   });
 }
-export function remove(id) {
+export function removeIndex(id) {
   return request(`/api/users/${id}`, {
-    method: 'DELETE',
+    method: 'POST',
   });
 }
-export function patch(id, values) {
-  return request(`/api/users/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify(values),
-  });
-}
-export function create(values) {
+// export function patch(id, values) {
+//   return request(`/api/users/${id}`, {
+//     method: 'PATCH',
+//     body: JSON.stringify(values),
+//   });
+// }
+export function createIndex(values) {
   return request('/api/users', {
     method: 'POST',
     body: JSON.stringify(values),

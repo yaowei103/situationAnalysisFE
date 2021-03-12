@@ -1,11 +1,11 @@
 import { request } from '@utils';
 
-export function fetch({ page }) {
+export function fetchBizSysList({ page }) {
   return request(`/api/bizSystemList?_page=${page}&_limit=${10}`, {
     method: 'GET',
   });
 }
-export function remove(id) {
+export function removeBizSys(id) {
   return request(`/api/users/${id}`, {
     method: 'DELETE',
   });

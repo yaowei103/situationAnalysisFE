@@ -1,7 +1,7 @@
 
 import * as api from './service';
 export default {
-    namespace: 'BizSystemManagement',
+    namespace: 'bizSystemManagement',
     state: {
         path: undefined,
         list: [],
@@ -12,15 +12,15 @@ export default {
         setupHistory({ dispatch, history }) {
             history.listen(({ pathname, query, state }) => { // eslint-disable-line
                 if (pathname === '/situation/bizSystemManagement') {
-                    dispatch({ type: 'fetch', payload: query });
+                    dispatch({ type: 'fetchBizSysList', payload: query });
                 }
             });
         },
     },
 
     effects: {
-        *fetch({ payload: { page = 1 } }, { call, put }) {
-            const result = yield call(api.fetch, { page });
+        *fetchBizSysList({ payload: { page = 1 } }, { call, put }) {
+            const result = yield call(api.fetchBizSysList, { page });
             const { data: list, total } = result;
             yield put({
                 type: 'save',
@@ -31,8 +31,8 @@ export default {
                 },
             });
         },
-        *removeuser({ payload: id }, { call, put }) {
-            yield call(api.remove, id);
+        *removeBizSys({ payload: id }, { call, put }) {
+            yield call(api.removeBizSys, id);
             yield put({ type: 'reload' });
         },
         *patch({ payload: { id, values } }, { call, put }) {
@@ -45,7 +45,7 @@ export default {
         },
         *reload(action, { put, select }) {
             const page = yield select(state => state.users.page);
-            yield put({ type: 'fetch', payload: { page } });
+            yield put({ type: 'fetchBizSysList', payload: { page } });
         },
     },
 
