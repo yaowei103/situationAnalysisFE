@@ -1,10 +1,15 @@
 import { request } from '@utils';
 
 export function login(payload) {
-  return request('/login', {
+  const { username, password } = payload;
+  return request(`/user/login?username=${username}&password=${password}`, {
     method: 'POST',
-    data: {
-      ...payload,
+    // data: {
+    //   ...payload,
+    // },
+    headers: {
+      'Content-Type': 'x-www-form-urlencoded',
+      'Accept': 'application/json',
     }
   });
 }

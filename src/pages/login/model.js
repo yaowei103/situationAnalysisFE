@@ -16,11 +16,14 @@ export default {
     },
     effects: {
         *login({ payload }, { call, put }) {
-            const { password, ...rest } = payload;
-            const response = yield call(api.login, { password: encrypt(password), ...rest });
-            const { status } = response;
+            const { password, username } = payload;
+            debugger
+            // const response = yield call(api.login, { password: encrypt(password), ...rest });
+            const response = yield call(api.login, { password, username });
+            const { code } = response;
+            debugger;
             console.log('loginRes:', response);
-            if (status === 0) {
+            if (code === 200) {
                 sessionStorage.setItem("isLogin", true);
                 yield put(routerRedux.push('/sys'));
             } else {
