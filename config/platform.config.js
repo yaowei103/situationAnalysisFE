@@ -9,7 +9,8 @@
 
 module.exports = {
     // 数据请求api
-    apiPrefix: document.head.dataset.api || '',
+    // apiPrefix: document.head.dataset.api || '',
+    apiPrefix: 'http://106.12.165.67:8080' || '',
     iframePrefix: document.head.dataset.iframe || '',
     loginLogo: 'logo_blue_1024.png',
     sysLogo: 'logo.png',

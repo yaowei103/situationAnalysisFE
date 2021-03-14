@@ -19,6 +19,9 @@
   margin-right: 30px;
   line-height: 23px;
 }
+.col .allWidth{
+  width: 100%;
+}
 .createBtn {
   margin-left: 15px;
 }

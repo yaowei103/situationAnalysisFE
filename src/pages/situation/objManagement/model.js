@@ -19,9 +19,9 @@ export default {
     },
 
     effects: {
-        *fetchObj({ payload: { page = 1, searchParam } }, { call, put }) {
-            const result = yield call(api.fetchObj, { page, searchParam });
-            const { data: list, total } = result;
+        *fetchObj({ payload: { page = 1, keyWord } }, { call, put }) {
+            const result = yield call(api.fetchObj, { page, keyWord });
+            const { data: { objectList: list }, total } = result;
             yield put({
                 type: 'save',
                 payload: {
@@ -44,8 +44,8 @@ export default {
             yield put({ type: 'reload' });
         },
         *reload(action, { put, select }) {
-            const page = yield select(state => state.users.page);
-            yield put({ type: 'fetch', payload: { page } });
+            // const page = yield select(state => state.users.page);
+            yield put({ type: 'fetchObj', payload: { page: 1, keyWord: '' } });
         },
     },
 

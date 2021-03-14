@@ -1,8 +1,9 @@
-import { PureComponent } from 'react';
+import { PureComponent, useEffect } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 // import { formatMessage } from 'umi/locale';
 import CreateIndex from './CreateIndex';
 import CreateObj from './CreateObj';
+import CreateBizSys from './CreateBizSys';
 
 class TableSearch extends PureComponent {
   handleSearch = (e) => {
@@ -20,19 +21,41 @@ class TableSearch extends PureComponent {
     const createMap = {
       index: 'indexManagement/createIndex',
       obj: 'objManagement/createObj',
-      arrange: 'arrangeManagement/createArrange',
+      biz: 'bizSystemManagement/createBiz',
     };
-    debugger;
     dispatch({
       type: createMap[createType],
       payload: values,
     });
   }
+
+  componentDidMount() {
+    const { dispatch, createType } = this.props;
+    if (createType === 'index') {
+      dispatch({
+        type: 'global/getObjectOptions'
+      });
+    } else if (createType === 'obj') {
+      dispatch({
+        type: 'global/getIndicatorOptions'
+      });
+      dispatch({
+        type: 'global/getLevelOptions'
+      });
+    } else if (createType === 'biz') {
+      dispatch({
+        type: 'global/getObjectOptions'
+      });
+    }
+  }
+
   renderCreateComponent = (createType) => {
+    const { indicatorOptions, objectOptions, levelOptions } = this.props;
     if (createType === 'index') {
       return (
         <CreateIndex
           record={{}}
+          objectOptions={objectOptions}
           onOk={(values) => { this.createHandler(values, createType) }}
         >
           <Button type="primary">新增</Button>
@@ -42,19 +65,25 @@ class TableSearch extends PureComponent {
       return (
         <CreateObj
           record={{}}
+          indicatorOptions={indicatorOptions}
+          objectOptions={objectOptions}
+          levelOptions={levelOptions}
           onOk={(values) => { this.createHandler(values, createType) }}
         >
           <Button type="primary">新增</Button>
         </CreateObj>
       );
-    } else if (createType === 'arrange') {
+    } else if (createType === 'biz') {
       return (
-        <CreateIndex
+        <CreateBizSys
           record={{}}
+          indicatorOptions={indicatorOptions}
+          objectOptions={objectOptions}
+          levelOptions={levelOptions}
           onOk={(values) => { this.createHandler(values, createType) }}
         >
           <Button type="primary">新增</Button>
-        </CreateIndex>
+        </CreateBizSys>
       );
     }
   }
@@ -67,7 +96,7 @@ class TableSearch extends PureComponent {
       <Form layout="inline" onSubmit={this.handleSearch}>
         <Form.Item
         >
-          {getFieldDecorator('searchParam', {
+          {getFieldDecorator('keyWord', {
             initialValue: defaultValue,
             rules: [{ required: false, message: 'Please input the word' }],
           })(

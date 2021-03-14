@@ -8,7 +8,7 @@ import styles from './index.css';
 import TableSearch from '../components/TableSearch';
 
 
-function ObjManagement({ dispatch, list: dataSource, loading, total, page: current }) {
+function ObjManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions }) {
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -29,11 +29,11 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       payload: values,
     });
   }
-  function handleSearch({ searchParam }) {
+  function handleSearch({ keyWord }) {
     dispatch({
       type: 'objManagement/fetchObj',
       payload: {
-        searchParam
+        keyWord
       }
     });
   }
@@ -46,23 +46,23 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
     },
     {
       title: '所属层次',
-      dataIndex: 'belongToArrange',
-      key: 'belongToArrange',
+      dataIndex: 'levelName',
+      key: 'levelName',
     },
     {
       title: '检测对象',
-      dataIndex: 'monitorObj',
-      key: 'monitorObj',
+      dataIndex: 'objectName',
+      key: 'objectName',
     },
     {
       title: '统计指标',
-      dataIndex: 'statisticalIndicators',
-      key: 'statisticalIndicators',
+      dataIndex: 'indicatorName',
+      key: 'indicatorName',
     },
     {
       title: '报警阈值',
-      dataIndex: 'alarmThreshold',
-      key: 'alarmThreshold',
+      dataIndex: 'runThreshold',
+      key: 'runThreshold',
     },
     {
       title: '操作',
@@ -84,10 +84,11 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       ),
     },
   ];
+
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="obj" />
+        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="obj" indicatorOptions={indicatorOptions} objectOptions={objectOptions} levelOptions={levelOptions} />
       </div>
       <Table
         columns={columns}
@@ -109,11 +110,15 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
 
 function mapStateToProps(state) {
   const { list, total, page } = state.objManagement;
+  const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
     list,
     total,
     page,
     loading: state.loading.models.users,
+    indicatorOptions,
+    objectOptions,
+    levelOptions
   };
 }
 export default connect(mapStateToProps)(ObjManagement);

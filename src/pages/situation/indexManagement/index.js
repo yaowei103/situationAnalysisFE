@@ -7,7 +7,7 @@ import styles from './index.css';
 import TableSearch from '../components/TableSearch';
 
 
-function IndexManagement({ dispatch, list: dataSource, loading, total, page: current }) {
+function IndexManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions }) {
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -33,11 +33,11 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
       payload: values,
     });
   }
-  function handleSearch({ searchParam }) {
+  function handleSearch({ keyWord }) {
     dispatch({
       type: 'indexManagement/fetchIndex',
       payload: {
-        searchParam
+        keyWord
       }
     });
   }
@@ -51,18 +51,18 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
     },
     {
       title: '所属对象',
-      dataIndex: 'belongToObj',
-      key: 'belongToObj',
+      dataIndex: 'objectName',
+      key: 'objectName',
     },
     {
       title: '监测指标',
-      dataIndex: 'monitorIndex',
-      key: 'monitorIndex',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '指标说明',
-      dataIndex: 'indexDesc',
-      key: 'indexDesc',
+      dataIndex: 'instruction',
+      key: 'instruction',
     },
     {
       title: '操作',
@@ -71,7 +71,7 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
       render: (text, record) => (
         <span className={styles.operation}>
           {
-            record.operation
+            record.isOriginalValue === 'N'
               ? <Popconfirm title="确认删除吗？" onConfirm={deleteHandler.bind(null, record.id)}>
                 <a href="/">删除</a>
               </Popconfirm>
@@ -81,10 +81,11 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
       ),
     },
   ];
+
   return (
     <Page loading={false}>
       <div className={styles.create}>
-        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="index" />
+        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="index" indicatorOptions={indicatorOptions} objectOptions={objectOptions} levelOptions={levelOptions} />
       </div>
       <Table
         columns={columns}
@@ -106,11 +107,15 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
 
 function mapStateToProps(state) {
   const { list, total, page } = state.indexManagement;
+  const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
     list,
     total,
     page,
     loading: state.loading.models.users,
+    indicatorOptions,
+    objectOptions,
+    levelOptions
   };
 }
 export default connect(mapStateToProps)(IndexManagement);

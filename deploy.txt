@@ -7,6 +7,7 @@ service nginx restart
 service nginx reload
 service nginx status
 
+netstat -anp |grep 8011
 
 nginx.conf
 server {

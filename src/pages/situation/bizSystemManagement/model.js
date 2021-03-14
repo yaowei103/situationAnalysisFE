@@ -19,9 +19,9 @@ export default {
     },
 
     effects: {
-        *fetchBizSysList({ payload: { page = 1 } }, { call, put }) {
-            const result = yield call(api.fetchBizSysList, { page });
-            const { data: list, total } = result;
+        *fetchBizSysList({ payload: { page = 1, keyWord } }, { call, put }) {
+            const result = yield call(api.fetchBizSysList, { page, keyWord });
+            const { data: { businessInfoList: list }, total } = result;
             yield put({
                 type: 'save',
                 payload: {
@@ -35,17 +35,21 @@ export default {
             yield call(api.removeBizSys, id);
             yield put({ type: 'reload' });
         },
-        *patch({ payload: { id, values } }, { call, put }) {
-            yield call(api.patch, id, values);
+        // *patch({ payload: { id, values } }, { call, put }) {
+        //     yield call(api.patch, id, values);
+        //     yield put({ type: 'reload' });
+        // },
+        *updateBiz({ payload: { values } }, { call, put }) {
+            yield call(api.updateBiz, values);
             yield put({ type: 'reload' });
         },
-        *create({ payload: values }, { call, put }) {
-            yield call(api.create, values);
+        *createBiz({ payload: values }, { call, put }) {
+            yield call(api.createBiz, values);
             yield put({ type: 'reload' });
         },
         *reload(action, { put, select }) {
-            const page = yield select(state => state.users.page);
-            yield put({ type: 'fetchBizSysList', payload: { page } });
+            // const page = yield select(state => state.users.page);
+            yield put({ type: 'fetchBizSysList', payload: { page: 1, keyWord: '' } });
         },
     },
 

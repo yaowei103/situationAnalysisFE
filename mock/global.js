@@ -15,6 +15,7 @@ const info = Mock.mock({
 });
 module.exports = {
     [`POST /getSysInfo`](req, res) {
+        console.log('-----------------------------****', res.status(200).json(info));
         res.status(200).json(info);
     },
     [`GET /logout`](req, res) {

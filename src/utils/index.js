@@ -1,6 +1,6 @@
 
-import request from './request';
-// import request from './umiRequest';
+// import request from './request';
+import request from './umiRequest';
 import menusData from '@menuConfig';
 import * as methods from './_';
 export {

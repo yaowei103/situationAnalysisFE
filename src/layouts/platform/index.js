@@ -76,9 +76,9 @@ class Platform extends PureComponent {
         dispatch({
             type: 'global/getSysInfo',
         });
-        dispatch({
-            type: 'global/getMessage',
-        });
+        // dispatch({
+        //     type: 'global/getMessage',
+        // });
         // 获取菜单列表
         dispatch({
             type: 'menu/getMenuData',

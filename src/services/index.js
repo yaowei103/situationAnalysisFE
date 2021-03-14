@@ -1,8 +1,11 @@
-import { logout, getSysInfo, getMessage } from './global';
+import { logout, getSysInfo, getMessage, getObjectOptions, getIndicatorOptions, getLevelOptions } from './global';
 import { getMenuData } from './menu';
 export {
   logout,
   getSysInfo,
   getMessage,
-  getMenuData
+  getMenuData,
+  getObjectOptions,
+  getIndicatorOptions,
+  getLevelOptions
 };

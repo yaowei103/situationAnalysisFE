@@ -1,24 +1,28 @@
 import { request } from '@utils';
 
-export function fetchIndex({ page, searchParam }) {
-  return request(`/api/objList?_page=${page}&_limit=${10}&_searchParam=${searchParam}`, {
+export function fetchIndex({ page, keyWord }) {
+  return request(`/indicators?_page=${page}&_limit=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
     method: 'GET',
   });
 }
 export function removeIndex(id) {
-  return request(`/api/users/${id}`, {
-    method: 'POST',
+  return request(`/ indicator ? id = ${id}`, {
+    method: 'Delete',
   });
 }
 // export function patch(id, values) {
-//   return request(`/api/users/${id}`, {
+//   return request(`/ api / users / ${ id }`, {
 //     method: 'PATCH',
 //     body: JSON.stringify(values),
 //   });
 // }
 export function createIndex(values) {
-  return request('/api/users', {
+  return request('/indicator', {
     method: 'POST',
     body: JSON.stringify(values),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    }
   });
 }

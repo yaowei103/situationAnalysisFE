@@ -14,6 +14,9 @@ export default {
         userInfo: {},
         message: [],
         notification: undefined,
+        indicatorOptions: [],
+        objectOptions: [],
+        levelOptions: []
     },
     subscriptions: {
         // setupHistory({ dispatch, history }) {
@@ -62,6 +65,40 @@ export default {
                 }
             });
         },
+        // 请求indicator options
+        *getIndicatorOptions({ payload = {} }, { call, put, select }) {
+            const { size = 0 } = payload;
+            let count = yield select(({ global }) => global.message.length);
+            const { data = [] } = yield call(api.getIndicatorOptions, { size: count + size });
+            yield put({
+                type: 'save',
+                payload: {
+                    indicatorOptions: data,
+                }
+            });
+        },
+        // 请求object options
+        *getObjectOptions({ payload = {} }, { call, put, select }) {
+            const { data = [] } = yield call(api.getObjectOptions);
+            yield put({
+                type: 'save',
+                payload: {
+                    objectOptions: data,
+                }
+            });
+        },
+        // 请求level options
+        *getLevelOptions({ payload = {} }, { call, put, select }) {
+            const { size = 0 } = payload;
+            let count = yield select(({ global }) => global.message.length);
+            const { data = [] } = yield call(api.getLevelOptions, { size: count + size });
+            yield put({
+                type: 'save',
+                payload: {
+                    levelOptions: data,
+                }
+            });
+        },
     },
 
     reducers: {
@@ -74,6 +111,9 @@ export default {
                 userInfo: {},
                 message: [],
                 notification: undefined,
+                indicatorOptions: [],
+                objectOptions: [],
+                levelOptions: []
             };
         }
     },

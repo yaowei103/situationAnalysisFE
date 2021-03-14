@@ -1,24 +1,31 @@
 import React from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
-import { Button, Select, Row, Col, Popconfirm } from 'antd';
+import { Button, Select, Row, Col, Popconfirm, Form, Input } from 'antd';
 // import { Page } from '@components';
 import styles from './index.css';
 import CreateAllHealthObj from './CreateAllHealthObj';
 // import UserModal from '../components/Modal';
 // import HealthItem from '../components/healthItem';
+const FormItem = Form.Item;
 
 
-function HealthItem({ dispatch, list, objConfigArr, listItem }) {
+function HealthItem({ dispatch, objectOptions, listItem, form }) {
 
-  function createHandler(values) {
+  const formItemLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 14 },
+  };
+  const { getFieldDecorator } = form;
+
+  const createHandler = (values) => {
     dispatch({
       type: 'users/create',
       payload: values,
     });
   }
 
-  function addObj(resultVal, forArrangeId) {
+  const addObj = (resultVal, forArrangeId) => {
     dispatch({
       type: 'allHealth/addObj',
       value: {
@@ -32,25 +39,44 @@ function HealthItem({ dispatch, list, objConfigArr, listItem }) {
     debugger;
   }
 
-  function renderSelect(objConfigArr) {
-    return objConfigArr.map((item, i) => {
+  function renderSelect(objectOptions) {
+    return objectOptions && objectOptions.map((item, i) => {
       return <Select.Option key={i} value={item.id}>{item.name}</Select.Option>;
     });
   }
 
-  function renderObjList(objConfig, healthItemId) {
-    return objConfig.map((item, index) => {
+  function renderObjList(objectList, healthItemId) {
+    return objectList && objectList.map((item, index) => {
       return (
         <Row className={styles.itemRow} key={index}>
           <Col span={6} className={styles.col}>
-            <Select className={styles.select} disabled defaultValue={item.obj} >
+            <FormItem
+              className={styles.allWidth}
+              {...formItemLayout}
+            >
               {
-                renderSelect(objConfigArr)
+                getFieldDecorator('id', {
+                  initialValue: item.id,
+                })(<Select className={styles.select} >
+                  {
+                    renderSelect(objectOptions)
+                  }
+                </Select>)
               }
-            </Select>
+            </FormItem>
           </Col>
           <Col span={6} className={styles.col}>
-            <strong>影响因子：</strong> <div className={styles.underLine}> {item.impactFactors} </div>
+            {/* <strong>影响因子：</strong> <div className={styles.underLine}> {item.impactFactor} </div> */}
+            <FormItem
+              {...formItemLayout}
+              label="影响因子"
+            >
+              {
+                getFieldDecorator('impactFactor', {
+                  initialValue: item.impactFactor,
+                })(<Input />)
+              }
+            </FormItem>
           </Col>
           <Col span={6} className={styles.col}>
             <Popconfirm title="确认删除吗？" onConfirm={deleteHandler.bind(null, healthItemId, item.id)}>
@@ -63,39 +89,67 @@ function HealthItem({ dispatch, list, objConfigArr, listItem }) {
   }
 
   return (
-    <div className={styles.healthItem}>
+    <div className={styles.healthItem} id={listItem.id}>
       <Row className={styles.itemRow}>
         <Col span={6} className={styles.col}>
-          <strong>层次名称：</strong> <div className={styles.underLine}> {listItem.arrangeName} </div>
+          {/* <strong>层次名称：</strong> <div className={styles.underLine}> {listItem.name} </div> */}
+          <FormItem
+            {...formItemLayout}
+            label="层次名称："
+          >
+            {
+              getFieldDecorator('name', {
+                initialValue: listItem.name,
+              })(<Input disabled />)
+            }
+          </FormItem>
         </Col>
         <Col span={6} className={styles.col}>
-          <strong>影响因子：</strong> <div className={styles.underLine}> {listItem.impactFactors} </div>
+          {/* <strong>影响因子：</strong> <div className={styles.underLine}> {listItem.impactFactor} </div> */}
+          <FormItem
+            {...formItemLayout}
+            label="影响因子:"
+          >
+            {
+              getFieldDecorator('impactFactor', {
+                initialValue: listItem.impactFactor,
+              })(<Input />)
+            }
+          </FormItem>
         </Col>
         <Col span={6} className={styles.col}>
-          <strong>预警阈值：</strong> <div className={styles.underLine}> {listItem.alarmThreshold} </div>
+          {/* <strong>预警阈值：</strong> <div className={styles.underLine}> {listItem.runThreshold} </div> */}
+          <FormItem
+            {...formItemLayout}
+            label="预警阈值:"
+          >
+            {
+              getFieldDecorator('runThreshold', {
+                initialValue: listItem.runThreshold,
+              })(<Input />)
+            }
+          </FormItem>
         </Col>
       </Row>
-      <Row className={styles.itemRow}>
-        <Col span={6} className={styles.col}>
-          <strong>对象设置</strong>
-          <CreateAllHealthObj objConfigArr={objConfigArr} onOk={(resultVal) => { addObj(resultVal, listItem.id); }}>
-            <Button className={styles.createBtn} type="primary" shape="round" size="small" >新增</Button>
-          </CreateAllHealthObj>
-        </Col>
+      <Row>
+        {/* <Col span={6} className={styles.col}> */}
+        <span>对象设置</span><Button className={styles.createBtn} type="primary" shape="round" size="small" >新增</Button>
+        {/* <CreateAllHealthObj objectOptions={objectOptions} onOk={(resultVal) => { addObj(resultVal, listItem.id); }} /> */}
+        {/* </Col> */}
       </Row>
       {
-        renderObjList(listItem.objConfig, listItem.id)
+        renderObjList(listItem.objectList, listItem.id)
       }
     </div>
   );
 }
 
 function mapStateToProps(state) {
-  const { list, objConfigArr } = state.allHealth;
+  // const { list } = state.allHealth;
+  const { objectOptions } = state.global;
   return {
-    objConfigArr,
-    list,
     loading: state.loading.models.users,
+    objectOptions
   };
 }
 export default connect(mapStateToProps)(HealthItem);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Form, Input, Select } from 'antd';
 const { TextArea } = Input;
+const { Option } = Select;
 
 const FormItem = Form.Item;
 class CreateIndex extends Component {
@@ -30,10 +31,18 @@ class CreateIndex extends Component {
       }
     });
   }
+
+  renderOptions = () => {
+    const { objectOptions } = this.props;
+    return objectOptions && objectOptions.map((item, index) => {
+      return <Option key={item.id} value={item.id}>{item.name}</Option>;
+    })
+  }
+
   render() {
     const { children, form, record } = this.props;
     const { getFieldDecorator } = form;
-    const { id, belongToObj, indexName, indexDesc } = record;
+    const { id, oId, name, instruction } = record;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -57,8 +66,8 @@ class CreateIndex extends Component {
               label="指标名称"
             >
               {
-                getFieldDecorator('indexName', {
-                  initialValue: indexName,
+                getFieldDecorator('name', {
+                  initialValue: name,
                 })(<Input />)
               }
             </FormItem>
@@ -67,9 +76,11 @@ class CreateIndex extends Component {
               label="所属对象"
             >
               {
-                getFieldDecorator('belongToObj', {
-                  initialValue: belongToObj,
-                })(<Select />)
+                getFieldDecorator('oId', {
+                  initialValue: oId,
+                })(<Select>
+                  {this.renderOptions()}
+                </Select>)
               }
             </FormItem>
             <FormItem
@@ -77,8 +88,8 @@ class CreateIndex extends Component {
               label="指标说明"
             >
               {
-                getFieldDecorator('indexDesc', {
-                  initialValue: indexDesc,
+                getFieldDecorator('instruction', {
+                  initialValue: instruction,
                 })(<TextArea />)
               }
             </FormItem>

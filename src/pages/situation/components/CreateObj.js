@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { Modal, Form, Input, Select, Button, Row, Col } from 'antd';
 import styles from './index.css';
-import reactTestRendererProductionMin from 'react-test-renderer/cjs/react-test-renderer.production.min';
+// import reactTestRendererProductionMin from 'react-test-renderer/cjs/react-test-renderer.production.min';
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -12,7 +12,7 @@ class CreateObj extends Component {
     super(props);
     this.state = {
       visible: false,
-      indexArr: []
+      indicatorInformationList: []
     };
   }
   showModalHandler = (e) => {
@@ -24,26 +24,35 @@ class CreateObj extends Component {
   hideModalHandler = () => {
     this.setState({
       visible: false,
-      indexArr: []
+      indicatorInformationList: []
     });
   }
+
+  mapIndicatorResult = (reqId) => {
+    const { indicatorOptions } = this.props;
+    return indicatorOptions.find((item, index) => {
+      return item.id === reqId;
+    });
+  }
+
   okHandler = () => {
     const { onOk } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         // 组装数据；
-        const { indexArr } = this.state;
-        const indexLength = indexArr.length;
+        const { indicatorInformationList } = this.state;
+        const indexLength = indicatorInformationList.length;
         var reqObj = {
-          objName: values.objName,
-          alarmThreshold: values.alarmThreshold,
-          belongToArrange: values.belongToArrange,
-          indexArr: []
+          objectName: values.objectName,
+          runThreshold: Number(values.runThreshold),
+          levelId: values.levelId,
+          indicatorInformationList: []
         };
         for (let i = 0; i < indexLength; i++) {
-          reqObj.indexArr.push({
-            indexId: values[`indexId_${i}`],
-            impactFactors_2: values[`impactFactors_${i}`]
+          reqObj.indicatorInformationList.push({
+            id: values[`indexId_${i}`],
+            name: this.mapIndicatorResult(values[`indexId_${i}`]).name,
+            impactFactor: Number(values[`impactFactors_${i}`])
           });
         }
         onOk(reqObj);
@@ -53,28 +62,43 @@ class CreateObj extends Component {
   }
   createObjIndex = () => {
     const newState = { ...this.state };
-    const newIndexArr = newState.indexArr;
+    const newIndexArr = newState.indicatorInformationList;
     newIndexArr.push({
-      indexId: '',
-      impactFactors: ''
+      id: '',
+      impactFactor: ''
     })
     this.setState({
-      indexArr: newIndexArr
+      indicatorInformationList: newIndexArr
     })
   }
   componentDidMount = () => {
     const { record } = this.props;
-    const { indexArr } = record;
+    const { indicatorInformationList } = record;
     this.setState({
-      indexArr: indexArr || []
+      indicatorInformationList: indicatorInformationList || []
     });
   }
+
+  renderIndicatorOptions = () => {
+    const { indicatorOptions } = this.props;
+    return indicatorOptions && indicatorOptions.map((item, index) => {
+      return <Option key={item.id} value={item.id}>{item.name}</Option>;
+    })
+  }
+
+  renderLevelOptions = () => {
+    const { levelOptions } = this.props;
+    return levelOptions && levelOptions.map((item, index) => {
+      return <Option key={item.id} value={item.id}>{item.name}</Option>;
+    })
+  }
+
   renderIndesList = () => {
-    const { indexArr } = this.state;
+    const { indicatorInformationList } = this.state;
     const { form } = this.props;
     const { getFieldDecorator } = form;
-    return indexArr.map((item, i) => {
-      const { indexId, impactFactors } = item;
+    return indicatorInformationList.map((item, i) => {
+      const { id, impactFactor } = item;
       return (
         <Row key={Math.random()}>
           <Col span={9}>
@@ -82,11 +106,9 @@ class CreateObj extends Component {
             >
               {
                 getFieldDecorator(`indexId_${i}`, {
-                  initialValue: indexId,
+                  initialValue: id,
                 })(<Select onChange={(val) => { this.handleObjIndexIdChange(val, i) }} >
-                  <Option value="1">1</Option>
-                  <Option value="2">2</Option>
-                  <Option value="3">3</Option>
+                  {this.renderIndicatorOptions()}
                 </Select>)
               }
             </FormItem>
@@ -97,7 +119,7 @@ class CreateObj extends Component {
             >
               {
                 getFieldDecorator(`impactFactors_${i}`, {
-                  initialValue: impactFactors,
+                  initialValue: impactFactor,
                 })(<Input placeholder="推荐影响因子0.5~1" onChange={(e) => { this.handleObjimpactFactorsChange(e, i) }} />)
               }
             </FormItem>
@@ -112,43 +134,43 @@ class CreateObj extends Component {
   }
   deleteObjIndex = (i) => {
     const newState = { ...this.state };
-    const { indexArr } = newState;
-    indexArr.splice(i, 1);
+    const { indicatorInformationList } = newState;
+    indicatorInformationList.splice(i, 1);
     this.setState({
-      indexArr
+      indicatorInformationList
     }, () => {
-      this.serFieldsValues();
+      this.setFieldsValues();
     });
   };
   handleObjIndexIdChange = (val, i) => {
     var newState = { ...this.state };
-    var { indexArr } = newState;
-    indexArr[i].indexId = val;
+    var { indicatorInformationList } = newState;
+    indicatorInformationList[i].id = val;
     this.setState({
-      indexArr
+      indicatorInformationList
     }, () => {
-      this.serFieldsValues();
+      this.setFieldsValues();
     });
   }
   handleObjimpactFactorsChange = (e, i) => {
     const val = e.target.value;
     var newState = { ...this.state };
-    var { indexArr } = newState;
-    indexArr[i].impactFactors = val;
+    var { indicatorInformationList } = newState;
+    indicatorInformationList[i].impactFactor = val;
     this.setState({
-      indexArr
+      indicatorInformationList
     }, () => {
-      this.serFieldsValues();
+      this.setFieldsValues();
     });
   }
-  serFieldsValues = () => {
+  setFieldsValues = () => {
     const { form } = this.props;
     const { setFieldsValue } = form;
-    var { indexArr } = this.state;
-    for (let i = 0; i < indexArr.length; i++) {
+    var { indicatorInformationList } = this.state;
+    for (let i = 0; i < indicatorInformationList.length; i++) {
       setFieldsValue({
-        [`indexId_${i}`]: indexArr[i].indexId,
-        [`impactFactors_${i}`]: indexArr[i].impactFactors
+        [`indexId_${i}`]: indicatorInformationList[i].id,
+        [`impactFactors_${i}`]: indicatorInformationList[i].impactFactor
       })
     }
   }
@@ -156,7 +178,7 @@ class CreateObj extends Component {
   render() {
     const { children, form, record } = this.props;
     const { getFieldDecorator } = form;
-    const { id, objName, alarmThreshold, belongToArrange } = record;
+    const { id, objectName, runThreshold, levelId } = record;
 
     return (
       <span>
@@ -175,8 +197,8 @@ class CreateObj extends Component {
               label="监测对象名称"
             >
               {
-                getFieldDecorator('objName', {
-                  initialValue: objName,
+                getFieldDecorator('objectName', {
+                  initialValue: objectName,
                 })(<Input />)
               }
             </FormItem>
@@ -184,8 +206,8 @@ class CreateObj extends Component {
               label="预警阈值"
             >
               {
-                getFieldDecorator('alarmThreshold', {
-                  initialValue: alarmThreshold,
+                getFieldDecorator('runThreshold', {
+                  initialValue: runThreshold,
                 })(<Input />)
               }
             </FormItem>
@@ -193,9 +215,11 @@ class CreateObj extends Component {
               label="所属层次"
             >
               {
-                getFieldDecorator('belongToArrange', {
-                  initialValue: belongToArrange,
-                })(<Select />)
+                getFieldDecorator('levelId', {
+                  initialValue: levelId,
+                })(<Select>
+                  {this.renderLevelOptions()}
+                </Select>)
               }
             </FormItem>
             <Row className={styles.rowMarginBottom}>

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input, Select } from 'antd';
+import { Row, Col, Form, Input, Select } from 'antd';
+import styles from './index.css';
 
 const FormItem = Form.Item;
-class CreateAllHealthObjModal extends Component {
+class CreateAllHealthObj extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,8 +32,8 @@ class CreateAllHealthObjModal extends Component {
       }
     });
   }
-  renderSelect = (objConfigArr) => {
-    return objConfigArr.map((item, i) => {
+  renderSelect = (objectOptions) => {
+    return objectOptions && objectOptions.map((item, i) => {
       return <Select.Option key={i} value={item.id}>{item.name}</Select.Option>;
     });
   }
@@ -42,8 +43,8 @@ class CreateAllHealthObjModal extends Component {
     });
   }
   render() {
-    const { children, form, objConfigArr } = this.props;
-    const { obj, impactFactors } = this.state;
+    const { form, objectOptions } = this.props;
+    const { obj, impactFactor } = this.state;
     const { getFieldDecorator } = form;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -51,47 +52,39 @@ class CreateAllHealthObjModal extends Component {
     };
 
     return (
-      <span>
-        <span onClick={this.showModalHandler}>
-          {children}
-        </span>
-        <Modal
-          title="新增对象"
-          visible={this.state.visible}
-          onOk={this.okHandler}
-          onCancel={this.hideModalHandler}
-        >
-          <Form onSubmit={this.okHandler}>
-            <FormItem
-              {...formItemLayout}
-              label="选择对象"
-            >
-              {
-                getFieldDecorator('obj', {
-                  initialValue: obj.value,
-                })(
-                  <Select name="obj" defaultValue={obj.value} onChange={(value) => { this.selectChange(value); }}>
-                    {
-                      this.renderSelect(objConfigArr)
-                    }
-                  </Select>
-                )
-              }
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="影响因子"
-            >
-              {
-                getFieldDecorator('impactFactors', {
-                  initialValue: impactFactors,
-                })(<Input />)
-              }
-            </FormItem>
-          </Form>
-        </Modal>
-      </span>
+      <Row className={styles.itemRow}>
+        <Col span={6}>
+          <FormItem
+            {...formItemLayout}
+          // label="选择对象"
+          >
+            {
+              getFieldDecorator('obj', {
+                initialValue: obj.value,
+              })(
+                <Select name="obj" defaultValue={obj.value} onChange={(value) => { this.selectChange(value); }}>
+                  {
+                    this.renderSelect(objectOptions)
+                  }
+                </Select>
+              )
+            }
+          </FormItem>
+        </Col>
+        <Col span={6}>
+          <FormItem
+            {...formItemLayout}
+            label="影响因子"
+          >
+            {
+              getFieldDecorator('impactFactor', {
+                initialValue: impactFactor,
+              })(<Input />)
+            }
+          </FormItem>
+        </Col>
+      </Row>
     );
   }
 }
-export default Form.create()(CreateAllHealthObjModal);
+export default Form.create()(CreateAllHealthObj);

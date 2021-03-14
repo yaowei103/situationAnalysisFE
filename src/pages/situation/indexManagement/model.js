@@ -19,8 +19,8 @@ export default {
     },
 
     effects: {
-        *fetchIndex({ payload: { page = 1, searchParam } }, { call, put }) {
-            const result = yield call(api.fetchIndex, { page, searchParam });
+        *fetchIndex({ payload: { page = 1, keyWord } }, { call, put }) {
+            const result = yield call(api.fetchIndex, { page, keyWord });
             const { data: list, total } = result;
             yield put({
                 type: 'save',

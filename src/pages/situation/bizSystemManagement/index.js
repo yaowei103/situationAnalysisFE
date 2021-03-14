@@ -4,11 +4,11 @@ import { connect } from 'dva';
 import { Table, Pagination, Popconfirm, Button, Input, Icon } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
-import UserModal from '../components/CreateIndex';
+import CreateBizSys from '../components/CreateBizSys';
 import TableSearch from '../components/TableSearch';
 
 
-function BizSystemManagement({ dispatch, list: dataSource, loading, total, page: current }) {
+function BizSystemManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions }) {
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -23,9 +23,12 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
     });
   }
   function editHandler(id, values) {
+    if (id) {
+      values.id = id;
+    }
     dispatch({
-      type: 'bizSystemManagement/patch',
-      payload: { id, values },
+      type: 'bizSystemManagement/updateBiz',
+      payload: { values },
     });
   }
   function createHandler(values) {
@@ -34,11 +37,11 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
       payload: values,
     });
   }
-  function handleSearch({ account }) {
-    this.props.dispatch({
-      type: 'bizSystemManagement/getAccountInfo',
+  function handleSearch({ keyWord }) {
+    dispatch({
+      type: 'bizSystemManagement/fetchBizSysList',
       payload: {
-        account
+        keyWord
       }
     });
   }
@@ -58,18 +61,29 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
     },
     {
       title: '业务系统',
-      dataIndex: 'bizSystem',
-      key: 'bizSystem',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '影响因子',
-      dataIndex: 'impactFactors',
-      key: 'impactFactors',
+      dataIndex: 'impactFactor',
+      key: 'impactFactor',
     },
     {
       title: '所监测对象',
-      dataIndex: 'monitoredObj',
-      key: 'monitoredObj',
+      dataIndex: 'objectList',
+      key: 'objectList',
+      render: (text, record) => {
+        const { objectList } = record;
+        if (objectList.length > 0) {
+          const renderTextArr = [];
+          objectList.map((item) => {
+            renderTextArr.push(item.objectName);
+          })
+          return (<span>{renderTextArr.join('、')}</span>);
+        }
+
+      }
     },
     {
       title: '平台',
@@ -78,8 +92,8 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
     },
     {
       title: '预警阈值',
-      dataIndex: 'alarmThreshold',
-      key: 'alarmThreshold',
+      dataIndex: 'runThreshold',
+      key: 'runThreshold',
     },
     {
       title: '操作',
@@ -87,7 +101,15 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
       key: 'operation',
       render: (text, record) => (
         <span className={styles.operation}>
-          {
+          <CreateBizSys record={record} onOk={editHandler.bind(null, record.id)} indicatorOptions={indicatorOptions}
+            objectOptions={objectOptions}
+            levelOptions={levelOptions}>
+            <a href="/">编辑</a>
+          </CreateBizSys>
+          <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
+            <a href="/">删除</a>
+          </Popconfirm>
+          {/* {
             record.operationEdit
               ? <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
                 <a href="/">编辑</a>
@@ -100,7 +122,7 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
                 <a href="/">删除</a>
               </Popconfirm>
               : ''
-          }
+          } */}
         </span>
       ),
     },
@@ -112,7 +134,7 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
           record={{}}
           onOk={createHandler}
         > */}
-        <TableSearch dispatch={dispatch} value="" onSubmit={handleSearch} />
+        <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="biz" indicatorOptions={indicatorOptions} objectOptions={objectOptions} levelOptions={levelOptions} />
         {/* <Button type="primary">新增</Button>
         </UserModal> */}
       </div>
@@ -135,12 +157,16 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.BizSystemManagement;
+  const { list, total, page } = state.bizSystemManagement;
+  const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
     list,
     total,
     page,
     loading: state.loading.models.users,
+    indicatorOptions,
+    objectOptions,
+    levelOptions
   };
 }
 export default connect(mapStateToProps)(BizSystemManagement);

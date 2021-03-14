@@ -1,12 +1,12 @@
 import { request } from '@utils';
 
-export function fetchObj({ page, searchParam }) {
-  return request(`/api/arrangeList?_page=${page}&_limit=${10}&_searchParam=${searchParam}`, {
+export function fetchObj({ page, keyWord }) {
+  return request(`/objects?_page=${page}&_limit=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
     method: 'GET',
   });
 }
 export function removeObj(id) {
-  return request(`/api/users/${id}`, {
+  return request(`/object/${id}`, {
     method: 'DELETE',
   });
 }
@@ -17,8 +17,12 @@ export function removeObj(id) {
 //   });
 // }
 export function createObj(values) {
-  return request('/api/users', {
+  return request('/object', {
     method: 'POST',
     body: JSON.stringify(values),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    }
   });
 }
