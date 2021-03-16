@@ -6,6 +6,7 @@ import { Page } from '@components';
 import styles from './index.css';
 // import UserModal from '../components/Modal';
 import TableSearch from '../components/TableSearch';
+import { formatDataForRowSpan } from '../../lib/resDataFormat';
 
 
 function ObjManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions }) {
@@ -42,17 +43,40 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       title: '编号',
       dataIndex: 'id',
       key: 'id',
-      // render: text => <Link to={`/sys/users/${text}`}>{text}</Link>,
+      render(text, record) {
+        return {
+          children: record.id,
+          props: {
+            rowSpan: record.rowSpan,
+          }
+        }
+      }
     },
     {
       title: '所属层次',
       dataIndex: 'levelName',
       key: 'levelName',
+      render(text, record) {
+        return {
+          children: record.levelName,
+          props: {
+            rowSpan: record.rowSpan,
+          }
+        }
+      }
     },
     {
       title: '检测对象',
       dataIndex: 'objectName',
       key: 'objectName',
+      render(text, record) {
+        return {
+          children: record.objectName,
+          props: {
+            rowSpan: record.rowSpan,
+          }
+        }
+      }
     },
     {
       title: '统计指标',
@@ -63,6 +87,14 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       title: '报警阈值',
       dataIndex: 'runThreshold',
       key: 'runThreshold',
+      render(text, record) {
+        return {
+          children: record.runThreshold,
+          props: {
+            rowSpan: record.rowSpan,
+          }
+        }
+      }
     },
     {
       title: '操作',
@@ -112,6 +144,7 @@ function mapStateToProps(state) {
   const { list, total, page } = state.objManagement;
   const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
+    // list: formatDataForRowSpan(list),
     list,
     total,
     page,

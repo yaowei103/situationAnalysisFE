@@ -7,7 +7,6 @@ import styles from './index.css';
 // import UserModal from '../components/Modal';
 import HealthItem from '../components/healthItem';
 
-
 function IndexManagement({ dispatch, list, form }) {
   useEffect(() => {
     dispatch({

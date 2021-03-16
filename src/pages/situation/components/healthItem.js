@@ -13,8 +13,22 @@ const FormItem = Form.Item;
 function HealthItem({ dispatch, objectOptions, listItem, form }) {
 
   const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 14 },
+    labelCol: { span: 7 },
+    wrapperCol: { span: 17 },
+  };
+  const formAllWidthItemLayout = {
+    labelCol: { span: 0 },
+    wrapperCol: { span: 24 },
+  };
+  const styleBottom0 = {
+    width: '100%',
+    marginBottom: 0
+  };
+  const styleBottom10 = {
+    marginBottom: '10px'
+  }
+  const styleWidth100 = {
+    width: '100%'
   };
   const { getFieldDecorator } = form;
 
@@ -51,8 +65,8 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
         <Row className={styles.itemRow} key={index}>
           <Col span={6} className={styles.col}>
             <FormItem
-              className={styles.allWidth}
-              {...formItemLayout}
+              style={styleBottom0}
+              {...formAllWidthItemLayout}
             >
               {
                 getFieldDecorator('id', {
@@ -68,6 +82,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
           <Col span={6} className={styles.col}>
             {/* <strong>影响因子：</strong> <div className={styles.underLine}> {item.impactFactor} </div> */}
             <FormItem
+              style={styleBottom0}
               {...formItemLayout}
               label="影响因子"
             >
@@ -95,6 +110,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
           {/* <strong>层次名称：</strong> <div className={styles.underLine}> {listItem.name} </div> */}
           <FormItem
             {...formItemLayout}
+            style={styleBottom10}
             label="层次名称："
           >
             {
@@ -108,6 +124,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
           {/* <strong>影响因子：</strong> <div className={styles.underLine}> {listItem.impactFactor} </div> */}
           <FormItem
             {...formItemLayout}
+            style={styleBottom10}
             label="影响因子:"
           >
             {
@@ -121,6 +138,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
           {/* <strong>预警阈值：</strong> <div className={styles.underLine}> {listItem.runThreshold} </div> */}
           <FormItem
             {...formItemLayout}
+            style={styleBottom10}
             label="预警阈值:"
           >
             {
@@ -131,7 +149,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
           </FormItem>
         </Col>
       </Row>
-      <Row>
+      <Row className={styles.titleRow}>
         {/* <Col span={6} className={styles.col}> */}
         <span>对象设置</span><Button className={styles.createBtn} type="primary" shape="round" size="small" >新增</Button>
         {/* <CreateAllHealthObj objectOptions={objectOptions} onOk={(resultVal) => { addObj(resultVal, listItem.id); }} /> */}
