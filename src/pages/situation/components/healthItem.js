@@ -39,38 +39,97 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
     });
   }
 
-  const addObj = (resultVal, forArrangeId) => {
+  const createLevelObj = (addItemId) => {
     dispatch({
       type: 'allHealth/addObj',
       value: {
-        resultVal,
-        forArrangeId
+        id: addItemId
       }
     });
   }
 
-  function deleteHandler(healthItemId, objConfigId) {
-    debugger;
-  }
-
-  function renderSelect(objectOptions) {
-    return objectOptions && objectOptions.map((item, i) => {
-      return <Select.Option key={i} value={item.id}>{item.name}</Select.Option>;
+  const deleteHandler = (healthItemId, objConfigId) => {
+    dispatch({
+      type: 'allHealth/delObj',
+      value: {
+        healthItemId,
+        objConfigId
+      }
     });
   }
 
-  function renderObjList(objectList, healthItemId) {
+  const saveHandler = (healthItemId) => {
+    // const listData = JSON.parse(JSON.stringify(listItem));
+    form.validateFields((err, values) => {
+      if (!err) {
+        const reqData = {
+          id: healthItemId,
+          name: values[`name_${healthItemId}`],
+          impactFactor: values[`impactFactor_${healthItemId}`],
+          runThreshold: values[`runThreshold_${healthItemId}`],
+          objectList: []
+        }
+        for (var i = 0; i >= 0; i++) {
+          if (values[`id_${healthItemId}_${i}`] === undefined) {
+            if (values[`objectName_${healthItemId}_${i}`] === undefined) {
+              break;
+            } else if (values[`objectName_${healthItemId}_${i}`] !== '') { // 新增的obj
+              const objItem = {
+                objectName: values[`objectName_${healthItemId}_${i}`],
+                impactFactor: values[`impactFactor_${healthItemId}_${i}`],
+              };
+              reqData.objectList.push(objItem);
+            } else {
+              break;
+            }
+          } else {
+            const objItem = {
+              id: values[`id_${healthItemId}_${i}`],
+              objectName: values[`objectName_${healthItemId}_${i}`],
+              impactFactor: values[`impactFactor_${healthItemId}_${i}`],
+            };
+            reqData.objectList.push(objItem);
+          }
+        }
+        // 保存数据
+        dispatch({
+          type: 'allHealth/updateLevel',
+          payload: {
+            ...reqData
+          }
+        });
+      }
+    });
+  }
+
+  const renderSelect = (objectOptions) => {
+    return objectOptions && objectOptions.map((item, i) => {
+      return <Select.Option key={i} value={item.name}>{item.name}</Select.Option>;
+    });
+  }
+
+  const renderObjList = (objectList, healthItemId) => {
     return objectList && objectList.map((item, index) => {
       return (
         <Row className={styles.itemRow} key={index}>
           <Col span={6} className={styles.col}>
             <FormItem
+              style={{ display: 'none' }}
+              {...formAllWidthItemLayout}
+            >
+              {
+                getFieldDecorator(`id_${healthItemId}_${index}`, {
+                  initialValue: item.id,
+                })(<input />)
+              }
+            </FormItem>
+            <FormItem
               style={styleBottom0}
               {...formAllWidthItemLayout}
             >
               {
-                getFieldDecorator('id', {
-                  initialValue: item.id,
+                getFieldDecorator(`objectName_${healthItemId}_${index}`, {
+                  initialValue: item.objectName,
                 })(<Select className={styles.select} >
                   {
                     renderSelect(objectOptions)
@@ -80,14 +139,13 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
             </FormItem>
           </Col>
           <Col span={6} className={styles.col}>
-            {/* <strong>影响因子：</strong> <div className={styles.underLine}> {item.impactFactor} </div> */}
             <FormItem
               style={styleBottom0}
               {...formItemLayout}
               label="影响因子"
             >
               {
-                getFieldDecorator('impactFactor', {
+                getFieldDecorator(`impactFactor_${healthItemId}_${index}`, {
                   initialValue: item.impactFactor,
                 })(<Input />)
               }
@@ -107,53 +165,50 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
     <div className={styles.healthItem} id={listItem.id}>
       <Row className={styles.itemRow}>
         <Col span={6} className={styles.col}>
-          {/* <strong>层次名称：</strong> <div className={styles.underLine}> {listItem.name} </div> */}
           <FormItem
             {...formItemLayout}
             style={styleBottom10}
             label="层次名称："
           >
             {
-              getFieldDecorator('name', {
+              getFieldDecorator(`name_${listItem.id}`, {
                 initialValue: listItem.name,
               })(<Input disabled />)
             }
           </FormItem>
         </Col>
         <Col span={6} className={styles.col}>
-          {/* <strong>影响因子：</strong> <div className={styles.underLine}> {listItem.impactFactor} </div> */}
           <FormItem
             {...formItemLayout}
             style={styleBottom10}
             label="影响因子:"
           >
             {
-              getFieldDecorator('impactFactor', {
+              getFieldDecorator(`impactFactor_${listItem.id}`, {
                 initialValue: listItem.impactFactor,
               })(<Input />)
             }
           </FormItem>
         </Col>
         <Col span={6} className={styles.col}>
-          {/* <strong>预警阈值：</strong> <div className={styles.underLine}> {listItem.runThreshold} </div> */}
           <FormItem
             {...formItemLayout}
             style={styleBottom10}
             label="预警阈值:"
           >
             {
-              getFieldDecorator('runThreshold', {
+              getFieldDecorator(`runThreshold_${listItem.id}`, {
                 initialValue: listItem.runThreshold,
               })(<Input />)
             }
           </FormItem>
         </Col>
+        <Col span={6} className={styles.col}>
+          <Button type="primary" onClick={() => { saveHandler(listItem.id) }}>保存</Button>
+        </Col>
       </Row>
       <Row className={styles.titleRow}>
-        {/* <Col span={6} className={styles.col}> */}
-        <span>对象设置</span><Button className={styles.createBtn} type="primary" shape="round" size="small" >新增</Button>
-        {/* <CreateAllHealthObj objectOptions={objectOptions} onOk={(resultVal) => { addObj(resultVal, listItem.id); }} /> */}
-        {/* </Col> */}
+        <span>对象设置</span><Button className={styles.createBtn} onClick={() => { createLevelObj(listItem.id) }} type="primary" shape="round" size="small" >新增</Button>
       </Row>
       {
         renderObjList(listItem.objectList, listItem.id)

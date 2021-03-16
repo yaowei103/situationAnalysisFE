@@ -27,9 +27,15 @@ export default {
                 },
             });
         },
-        *updateLevel({ payload: id }, { call, put }) {
-            yield call(api.updateLevel, id);
+        *updateLevel({ payload }, { call, put }) {
+            yield call(api.updateLevel, payload);
             yield put({ type: 'reload' });
+        },
+        *addObj({ value }, { call, put }) {
+            yield put({ type: 'addOneObj', value });
+        },
+        *delObj({ value }, { call, put }) {
+            yield put({ type: 'deleteOneObj', value });
         },
         // *patch({ payload: { id, values } }, { call, put }) {
         //     yield call(api.patch, id, values);
@@ -49,6 +55,42 @@ export default {
         save(state, action) {
             return { ...state, ...action.payload };
         },
+        addOneObj(state, action) {
+            const newState = JSON.parse(JSON.stringify(state));
+            const id = action.value.id;
+            newState.list.map((item, index) => {
+                if (item.id === id) {
+                    const newItem = { ...item };
+                    newItem.objectList.push({
+                        objectName: '',
+                        impactFactor: ''
+                    });
+                    return newItem;
+                }
+            });
+            return newState;
+        },
+        deleteOneObj(state, action) {
+            const newState = JSON.parse(JSON.stringify(state));
+            const { healthItemId, objConfigId } = action.value;
+            const healthItemIndex = newState.list.findIndex((item) => {
+                return item.id === healthItemId;
+                // const newItem = { ...item };
+                // newItem.objectList.push({
+                //     objectName: '',
+                //     impactFactor: ''
+                // });
+                // return newItem;
+            });
+            const healthItemObj = newState.list[healthItemIndex];
+            if (objConfigId !== '') {
+                const objItemIndex = healthItemObj.objectList.findIndex((item) => { return item.id === objConfigId });
+                healthItemObj.objectList.splice(objItemIndex, 1);
+            } else {
+                healthItemObj.objectList.pop();
+            }
+            return newState;
+        }
     },
 
 };

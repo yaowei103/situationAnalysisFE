@@ -17,11 +17,9 @@ export default {
     effects: {
         *login({ payload }, { call, put }) {
             const { password, username } = payload;
-            debugger
             // const response = yield call(api.login, { password: encrypt(password), ...rest });
             const response = yield call(api.login, { password, username });
             const { code } = response;
-            debugger;
             console.log('loginRes:', response);
             if (code === 200) {
                 sessionStorage.setItem("isLogin", true);

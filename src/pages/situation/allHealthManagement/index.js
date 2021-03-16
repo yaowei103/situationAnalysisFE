@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
-import { Form, Pagination, Popconfirm } from 'antd';
+import { Form, Pagination, Popconfirm, Row, Col, Button } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
 // import UserModal from '../components/Modal';
@@ -18,17 +18,6 @@ function IndexManagement({ dispatch, list, form }) {
 
   }
 
-  const okHandler = () => {
-    // const { onOk } = this.props;
-    form.validateFields((err, values) => {
-      if (!err) {
-        debugger;
-        // onOk(values);
-        // this.hideModalHandler();
-      }
-    });
-  }
-
   const createHandler = (values) => {
     dispatch({
       type: 'users/create',
@@ -37,7 +26,7 @@ function IndexManagement({ dispatch, list, form }) {
   }
   return (
     <Page loading={false}>
-      <Form onSubmit={okHandler}>
+      <Form>
         {
           list && list.map((item, index) => {
             return <HealthItem listItem={item} key={index} form={form} />

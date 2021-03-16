@@ -7,7 +7,7 @@ export function fetch({ page, keyWord }) {
 }
 
 export function updateLevel(values) {
-  return request('/api/users', {
+  return request('/level', {
     method: 'PUT',
     body: JSON.stringify(values),
     headers: {
