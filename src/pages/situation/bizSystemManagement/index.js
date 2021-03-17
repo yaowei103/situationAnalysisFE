@@ -101,28 +101,22 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
       key: 'operation',
       render: (text, record) => (
         <span className={styles.operation}>
-          <CreateBizSys record={record} onOk={editHandler.bind(null, record.id)} indicatorOptions={indicatorOptions}
-            objectOptions={objectOptions}
-            levelOptions={levelOptions}>
-            <a href="/">编辑</a>
-          </CreateBizSys>
-          <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
-            <a href="/">删除</a>
-          </Popconfirm>
-          {/* {
-            record.operationEdit
-              ? <UserModal record={record} onOk={editHandler.bind(null, record.id)}>
+          {
+            record.isOriginalValue
+              ? ''
+              : <CreateBizSys record={record} onOk={editHandler.bind(null, record.id)} indicatorOptions={indicatorOptions}
+                objectOptions={objectOptions}
+                levelOptions={levelOptions}>
                 <a href="/">编辑</a>
-              </UserModal>
-              : ''
+              </CreateBizSys>
           }
           {
-            record.operationDelete
-              ? <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
+            record.isOriginalValue
+              ? ''
+              : <Popconfirm title="Confirm to delete?" onConfirm={deleteHandler.bind(null, record.id)}>
                 <a href="/">删除</a>
               </Popconfirm>
-              : ''
-          } */}
+          }
         </span>
       ),
     },

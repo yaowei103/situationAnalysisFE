@@ -21,7 +21,7 @@ export default {
     effects: {
         *fetchBizSysList({ payload: { page = 1, keyWord } }, { call, put }) {
             const result = yield call(api.fetchBizSysList, { page, keyWord });
-            const { data: { businessInfoList: list }, total } = result;
+            const { data: { contents: list, totalSize: total } } = result;
             yield put({
                 type: 'save',
                 payload: {

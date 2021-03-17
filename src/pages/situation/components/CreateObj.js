@@ -176,10 +176,11 @@ class CreateObj extends Component {
   }
 
   render() {
-    const { children, form, record } = this.props;
+    const { children, form, record, levelOptions } = this.props;
     const { getFieldDecorator } = form;
-    const { id, objectName, runThreshold, levelId } = record;
-
+    const { id, objectName, runThreshold, levelName } = record;
+    const levelObj = levelOptions.find((item) => { return item.name === levelName })
+    const levelId = levelObj && levelObj.id;
     return (
       <span>
         <span onClick={this.showModalHandler}>

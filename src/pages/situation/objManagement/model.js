@@ -21,7 +21,7 @@ export default {
     effects: {
         *fetchObj({ payload: { page = 1, keyWord } }, { call, put }) {
             const result = yield call(api.fetchObj, { page, keyWord });
-            const { data: { objectList: list }, total } = result;
+            const { data: { contents: list, totalSize: total } } = result;
             yield put({
                 type: 'save',
                 payload: {
@@ -35,17 +35,18 @@ export default {
             yield call(api.removeObj, id);
             yield put({ type: 'reload' });
         },
-        // *patch({ payload: { id, values } }, { call, put }) {
-        //     yield call(api.patch, id, values);
-        //     yield put({ type: 'reload' });
-        // },
+        *updateObj({ payload: values }, { call, put }) {
+            debugger;
+            yield call(api.updateObj, values);
+            yield put({ type: 'reload' });
+        },
         *createObj({ payload: values }, { call, put }) {
             yield call(api.createObj, values);
             yield put({ type: 'reload' });
         },
         *reload(action, { put, select }) {
-            // const page = yield select(state => state.users.page);
-            yield put({ type: 'fetchObj', payload: { page: 1, keyWord: '' } });
+            const page = yield select(state => state.page);
+            yield put({ type: 'fetchObj', payload: { page, keyWord: '' } });
         },
     },
 

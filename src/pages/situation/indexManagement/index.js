@@ -17,7 +17,7 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
   }
   function pageChangeHandler(page) {
     dispatch({
-      type: 'users/fetch',
+      type: 'indexManagement/fetchIndex',
       payload: { page },
     });
   }

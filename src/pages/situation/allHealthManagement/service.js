@@ -1,7 +1,7 @@
 import { request } from '@utils';
 
 export function fetch({ page, keyWord }) {
-  return request(`/levels?_page=${page}&_limit=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
+  return request(`/levels?pageNum=${page}&pageSize=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
     method: 'GET',
   });
 }

@@ -1,12 +1,12 @@
 import { request } from '@utils';
 
 export function fetchIndex({ page, keyWord }) {
-  return request(`/indicators?_page=${page}&_limit=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
+  return request(`/indicators?pageNum=${page}&pageSize=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
     method: 'GET',
   });
 }
 export function removeIndex(id) {
-  return request(`/ indicator ? id = ${id}`, {
+  return request(`/indicator?id=${id}`, {
     method: 'Delete',
   });
 }

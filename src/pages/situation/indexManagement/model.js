@@ -21,7 +21,7 @@ export default {
     effects: {
         *fetchIndex({ payload: { page = 1, keyWord } }, { call, put }) {
             const result = yield call(api.fetchIndex, { page, keyWord });
-            const { data: list, total } = result;
+            const { data: { contents: list, totalSize: total } } = result;
             yield put({
                 type: 'save',
                 payload: {
@@ -33,11 +33,11 @@ export default {
         },
         *removeIndex({ payload: id }, { call, put }) {
             yield call(api.removeIndex, id);
-            // yield put({ type: 'reload' });
+            yield put({ type: 'reload' });
         },
         *createIndex({ payload: values }, { call, put }) {
             yield call(api.createIndex, values);
-            // yield put({ type: 'reload' });
+            yield put({ type: 'reload' });
         },
         // *patch({ payload: { id, values } }, { call, put }) {
         //     yield call(api.patch, id, values);
@@ -47,10 +47,10 @@ export default {
         //     yield call(api.create, values);
         //     yield put({ type: 'reload' });
         // },
-        // *reload(action, { put, select }) {
-        //     const page = yield select(state => state.users.page);
-        //     yield put({ type: 'fetch', payload: { page } });
-        // },
+        *reload(action, { put, select }) {
+            const page = yield select(state => state.page);
+            yield put({ type: 'fetchIndex', payload: { page } });
+        },
     },
 
     reducers: {

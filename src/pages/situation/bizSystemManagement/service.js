@@ -1,7 +1,7 @@
 import { request } from '@utils';
 
 export function fetchBizSysList({ page, keyWord }) {
-  return request(`/businesses?_page=${page}&_limit=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
+  return request(`/businesses?pageNum=${page}&pageSize=${10}${keyWord ? `&keyWord=${keyWord}` : ''}`, {
     method: 'GET',
   });
 }
