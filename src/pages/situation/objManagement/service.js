@@ -12,7 +12,6 @@ export function removeObj(id) {
 }
 
 export function updateObj(values) {
-  debugger;
   return request(`/object`, {
     method: 'PUT',
     body: JSON.stringify(values),

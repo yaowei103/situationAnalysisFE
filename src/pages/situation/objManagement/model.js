@@ -36,7 +36,6 @@ export default {
             yield put({ type: 'reload' });
         },
         *updateObj({ payload: values }, { call, put }) {
-            debugger;
             yield call(api.updateObj, values);
             yield put({ type: 'reload' });
         },
