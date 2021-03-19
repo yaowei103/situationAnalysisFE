@@ -48,8 +48,8 @@ export default {
             yield put({ type: 'reload' });
         },
         *reload(action, { put, select }) {
-            // const page = yield select(state => state.users.page);
-            yield put({ type: 'fetchBizSysList', payload: { page: 1, keyWord: '' } });
+            const page = yield select(state => state.bizSystemManagement.page);
+            yield put({ type: 'fetchBizSysList', payload: { page, keyWord: '' } });
         },
     },
 

@@ -44,7 +44,7 @@ export default {
             yield put({ type: 'reload' });
         },
         *reload(action, { put, select }) {
-            const page = yield select(state => state.page);
+            const page = yield select(state => state.objManagement.page);
             yield put({ type: 'fetchObj', payload: { page, keyWord: '' } });
         },
     },

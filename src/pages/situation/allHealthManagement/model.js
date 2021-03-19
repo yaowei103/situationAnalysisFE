@@ -27,8 +27,12 @@ export default {
                 },
             });
         },
-        *updateLevel({ payload }, { call, put }) {
-            yield call(api.updateLevel, payload);
+        *updateLevel({ value }, { call, put, select }) {
+            const { healthItemId } = value;
+            const reqObj = yield select((state) => {
+                return state.allHealth.list.find((item) => { return item.id == healthItemId })
+            });
+            yield call(api.updateLevel, reqObj);
             yield put({ type: 'reload' });
         },
         *addObj({ value }, { call, put }) {
@@ -75,19 +79,22 @@ export default {
             const { healthItemId, objConfigId } = action.value;
             const healthItemIndex = newState.list.findIndex((item) => {
                 return item.id === healthItemId;
-                // const newItem = { ...item };
-                // newItem.objectList.push({
-                //     objectName: '',
-                //     impactFactor: ''
-                // });
-                // return newItem;
             });
             const healthItemObj = newState.list[healthItemIndex];
-            if (objConfigId !== '') {
-                const objItemIndex = healthItemObj.objectList.findIndex((item) => { return item.id === objConfigId });
-                healthItemObj.objectList.splice(objItemIndex, 1);
-            } else {
-                healthItemObj.objectList.pop();
+            const objItemIndex = healthItemObj.objectList.findIndex((item) => { return item.id == objConfigId });
+            healthItemObj.objectList.splice(objItemIndex, 1);
+            return newState;
+        },
+        changeObj(state, action) {
+            const newState = JSON.parse(JSON.stringify(state));
+            const { sign, val } = action.value;
+            const [key, healthItemId, objIndex] = sign.split('_');
+            debugger;
+            const objectList = newState.list.find((item) => { return item.id == healthItemId }).objectList;
+            const objKey = key === 'impactFactor' ? key : 'id';
+            objectList[objIndex] = {
+                ...objectList[objIndex],
+                [objKey]: val
             }
             return newState;
         }

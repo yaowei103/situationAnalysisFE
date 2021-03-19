@@ -48,7 +48,7 @@ export default {
         //     yield put({ type: 'reload' });
         // },
         *reload(action, { put, select }) {
-            const page = yield select(state => state.page);
+            const page = yield select(state => state.indexManagement.page);
             yield put({ type: 'fetchIndex', payload: { page } });
         },
     },
