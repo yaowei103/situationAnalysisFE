@@ -89,7 +89,6 @@ export default {
             const newState = JSON.parse(JSON.stringify(state));
             const { sign, val } = action.value;
             const [key, healthItemId, objIndex] = sign.split('_');
-            debugger;
             const objectList = newState.list.find((item) => { return item.id == healthItemId }).objectList;
             const objKey = key === 'impactFactor' ? key : 'id';
             objectList[objIndex] = {

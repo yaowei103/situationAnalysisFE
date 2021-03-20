@@ -12,7 +12,7 @@ class CreateObj extends Component {
     super(props);
     this.state = {
       visible: false,
-      indicatorInformationList: []
+      indicatorInfoList: []
     };
   }
   showModalHandler = (e) => {
@@ -24,7 +24,7 @@ class CreateObj extends Component {
   hideModalHandler = () => {
     this.setState({
       visible: false,
-      indicatorInformationList: []
+      indicatorInfoList: []
     });
   }
 
@@ -40,16 +40,16 @@ class CreateObj extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         // 组装数据；
-        const { indicatorInformationList } = this.state;
-        const indexLength = indicatorInformationList.length;
+        const { indicatorInfoList } = this.state;
+        const indexLength = indicatorInfoList.length;
         var reqObj = {
           objectName: values.objectName,
           runThreshold: Number(values.runThreshold),
           levelId: values.levelId,
-          indicatorInformationList: []
+          indicatorInfoList: []
         };
         for (let i = 0; i < indexLength; i++) {
-          reqObj.indicatorInformationList.push({
+          reqObj.indicatorInfoList.push({
             id: values[`indexId_${i}`],
             name: this.mapIndicatorResult(values[`indexId_${i}`]).name,
             impactFactor: Number(values[`impactFactors_${i}`])
@@ -62,20 +62,20 @@ class CreateObj extends Component {
   }
   createObjIndex = () => {
     const newState = { ...this.state };
-    const newIndexArr = newState.indicatorInformationList;
+    const newIndexArr = newState.indicatorInfoList;
     newIndexArr.push({
       id: '',
       impactFactor: ''
     })
     this.setState({
-      indicatorInformationList: newIndexArr
+      indicatorInfoList: newIndexArr
     })
   }
   componentDidMount = () => {
     const { record } = this.props;
-    const { indicatorInformationList } = record;
+    const { indicatorInfoList } = record;
     this.setState({
-      indicatorInformationList: indicatorInformationList || []
+      indicatorInfoList: indicatorInfoList || []
     });
   }
 
@@ -94,10 +94,10 @@ class CreateObj extends Component {
   }
 
   renderIndesList = () => {
-    const { indicatorInformationList } = this.state;
+    const { indicatorInfoList } = this.state;
     const { form } = this.props;
     const { getFieldDecorator } = form;
-    return indicatorInformationList.map((item, i) => {
+    return indicatorInfoList.map((item, i) => {
       const { id, impactFactor } = item;
       return (
         <Row key={Math.random()}>
@@ -134,20 +134,20 @@ class CreateObj extends Component {
   }
   deleteObjIndex = (i) => {
     const newState = { ...this.state };
-    const { indicatorInformationList } = newState;
-    indicatorInformationList.splice(i, 1);
+    const { indicatorInfoList } = newState;
+    indicatorInfoList.splice(i, 1);
     this.setState({
-      indicatorInformationList
+      indicatorInfoList
     }, () => {
       this.setFieldsValues();
     });
   };
   handleObjIndexIdChange = (val, i) => {
     var newState = { ...this.state };
-    var { indicatorInformationList } = newState;
-    indicatorInformationList[i].id = val;
+    var { indicatorInfoList } = newState;
+    indicatorInfoList[i].id = val;
     this.setState({
-      indicatorInformationList
+      indicatorInfoList
     }, () => {
       this.setFieldsValues();
     });
@@ -155,10 +155,10 @@ class CreateObj extends Component {
   handleObjimpactFactorsChange = (e, i) => {
     const val = e.target.value;
     var newState = { ...this.state };
-    var { indicatorInformationList } = newState;
-    indicatorInformationList[i].impactFactor = val;
+    var { indicatorInfoList } = newState;
+    indicatorInfoList[i].impactFactor = val;
     this.setState({
-      indicatorInformationList
+      indicatorInfoList
     }, () => {
       this.setFieldsValues();
     });
@@ -166,11 +166,11 @@ class CreateObj extends Component {
   setFieldsValues = () => {
     const { form } = this.props;
     const { setFieldsValue } = form;
-    var { indicatorInformationList } = this.state;
-    for (let i = 0; i < indicatorInformationList.length; i++) {
+    var { indicatorInfoList } = this.state;
+    for (let i = 0; i < indicatorInfoList.length; i++) {
       setFieldsValue({
-        [`indexId_${i}`]: indicatorInformationList[i].id,
-        [`impactFactors_${i}`]: indicatorInformationList[i].impactFactor
+        [`indexId_${i}`]: indicatorInfoList[i].id,
+        [`impactFactors_${i}`]: indicatorInfoList[i].impactFactor
       })
     }
   }

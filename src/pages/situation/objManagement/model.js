@@ -22,6 +22,9 @@ export default {
         *fetchObj({ payload: { page = 1, keyWord } }, { call, put }) {
             const result = yield call(api.fetchObj, { page, keyWord });
             const { data: { contents: list, totalSize: total } } = result;
+            list.map((item, index) => {
+                item.key = index;
+            });
             yield put({
                 type: 'save',
                 payload: {

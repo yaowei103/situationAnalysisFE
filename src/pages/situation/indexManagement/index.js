@@ -88,6 +88,7 @@ function IndexManagement({ dispatch, list: dataSource, loading, total, page: cur
         <TableSearch dispatch={dispatch} value="" onSearch={handleSearch} createType="index" indicatorOptions={indicatorOptions} objectOptions={objectOptions} levelOptions={levelOptions} />
       </div>
       <Table
+        bordered
         columns={columns}
         loading={loading}
         dataSource={dataSource}

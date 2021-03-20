@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
 import { Table, Pagination, Popconfirm, Button } from 'antd';
@@ -10,13 +10,26 @@ import { formatDataForRowSpan } from '../../lib/resDataFormat';
 import CreateObj from '../components/CreateObj';
 
 
-function ObjManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions }) {
+function ObjManagement({ dispatch, list, loading, total, page: current, indicatorOptions, objectOptions, levelOptions, state: store }) {
+  const dataSource = JSON.parse(JSON.stringify(list));
+
   // 对数据进行排序，方便合并单元格
-  // dataSource.sort((a, b) => {
-  //   if (a['objectName'] != b['objectName']) {
-  //     return a['objectName'].localeCompare(b['objectName']);
-  //   }
-  // });
+  dataSource.sort((a, b) => {
+    if (a['levelName'] != null && b['levelName'] != null) {
+      if (a['levelName'] != b['levelName']) {
+        return a['levelName'].localeCompare(b['levelName']);
+      } else {
+        return a['objectName'].localeCompare(b['objectName']);
+      }
+    } else if (a['levelName'] == null && b['levelName'] != null) {
+      return 1;
+    } else if (a['levelName'] == null && b['levelName'] == null) {
+      return 0;
+    } else if (a['levelName'] != null && b['levelName'] == null) {
+      return -1;
+    }
+  });
+
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -53,7 +66,6 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
     let n = 0;
     if (col_name !== temp[col_name]) {
       temp[col_name] = row[col_name];
-
       dataSource.forEach((e) => {
         if (compare_col_name !== null) {
           if (e[col_name] === temp[col_name] && e[compare_col_name] === row[compare_col_name]) {
@@ -91,25 +103,25 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       title: '编号',
       dataIndex: 'id',
       key: 'id',
-      // render(text, record, index) {
-      //   // return calcRowSpan('id', record, index, dataSource);
-      // }
+      render(text, record, index) {
+        return calcRowSpan('id', record, index, dataSource);
+      }
     },
     {
       title: '所属层次',
       dataIndex: 'levelName',
       key: 'levelName',
-      // render(text, record, index) {
-      //   // return calcRowSpan('levelName', record, index, dataSource);
-      // }
+      render(text, record, index) {
+        return calcRowSpan('levelName', record, index, dataSource);
+      }
     },
     {
       title: '检测对象',
       dataIndex: 'objectName',
       key: 'objectName',
-      // render(text, record, index) {
-      //   // return calcRowSpan('objectName', record, index, dataSource);
-      // }
+      render(text, record, index) {
+        return calcRowSpan('objectName', record, index, dataSource);
+      }
     },
     {
       title: '统计指标',
@@ -121,7 +133,7 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       dataIndex: 'runThreshold',
       key: 'runThreshold',
       // render(text, record, index) {
-      //   // return calcRowSpan('runThreshold', record, index, dataSource);
+      //   return calcRowSpan('runThreshold', record, index, dataSource);
       // }
     },
     {
@@ -156,9 +168,10 @@ function ObjManagement({ dispatch, list: dataSource, loading, total, page: curre
       </div>
       <Table
         columns={columns}
+        bordered
         loading={loading}
         dataSource={dataSource}
-        rowKey={record => record.id}
+        rowKey={record => record.key}
         pagination={false}
       />
       <Pagination
@@ -177,6 +190,7 @@ function mapStateToProps(state) {
   const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
     // list: formatDataForRowSpan(list),
+    state,
     list,
     total,
     page,

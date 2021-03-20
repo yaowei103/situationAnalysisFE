@@ -133,6 +133,7 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
         </UserModal> */}
       </div>
       <Table
+        bordered
         columns={columns}
         loading={loading}
         dataSource={dataSource}
