@@ -23,7 +23,7 @@ export default {
             console.log('loginRes:', response);
             if (code === 200) {
                 sessionStorage.setItem("isLogin", true);
-                yield put(routerRedux.push('/sys'));
+                yield put(routerRedux.push('/situation/indexManagement'));
             } else {
                 yield put({
                     type: 'save',

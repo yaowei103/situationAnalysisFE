@@ -6,7 +6,6 @@ import { Page } from '@components';
 import styles from './index.css';
 // import UserModal from '../components/Modal';
 import TableSearch from '../components/TableSearch';
-import { formatDataForRowSpan } from '../../lib/resDataFormat';
 import CreateObj from '../components/CreateObj';
 
 
