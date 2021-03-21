@@ -35,8 +35,8 @@ export function getObjectOptions() {
   });
 }
 
-export function getIndicatorOptions() {
-  return request('/indicatorOptions', {
+export function getIndicatorOptions(payload) {
+  return request(`/indicatorOptions${payload.oId ? `?oId=${payload.oId}` : ''}`, {
     method: 'GET'
   });
 }

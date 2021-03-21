@@ -66,10 +66,8 @@ export default {
             });
         },
         // 请求indicator options
-        *getIndicatorOptions({ payload = {} }, { call, put, select }) {
-            const { size = 0 } = payload;
-            let count = yield select(({ global }) => global.message.length);
-            const { data = [] } = yield call(api.getIndicatorOptions, { size: count + size });
+        *getIndicatorOptions({ payload: { oId } }, { call, put, select }) {
+            const { data = [] } = yield call(api.getIndicatorOptions, { oId });
             yield put({
                 type: 'save',
                 payload: {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
+import { connect } from 'dva';
 import { Modal, Form, Input, Select, Button, Row, Col } from 'antd';
 import styles from './index.css';
 // import reactTestRendererProductionMin from 'react-test-renderer/cjs/react-test-renderer.production.min';
@@ -35,48 +36,18 @@ class CreateObj extends Component {
     });
   }
 
-  okHandler = () => {
-    const { onOk } = this.props;
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        // 组装数据；
-        const { indicatorInfoList } = this.state;
-        const indexLength = indicatorInfoList.length;
-        var reqObj = {
-          objectName: values.objectName,
-          runThreshold: Number(values.runThreshold),
-          levelId: values.levelId,
-          indicatorInfoList: []
-        };
-        for (let i = 0; i < indexLength; i++) {
-          reqObj.indicatorInfoList.push({
-            id: values[`indexId_${i}`],
-            name: this.mapIndicatorResult(values[`indexId_${i}`]).name,
-            impactFactor: Number(values[`impactFactors_${i}`])
-          });
-        }
-        onOk(reqObj);
-        this.hideModalHandler();
-      }
-    });
-  }
-  createObjIndex = () => {
-    const newState = { ...this.state };
-    const newIndexArr = newState.indicatorInfoList;
-    newIndexArr.push({
-      id: '',
-      impactFactor: ''
-    })
-    this.setState({
-      indicatorInfoList: newIndexArr
-    })
-  }
-  componentDidMount = () => {
-    const { record } = this.props;
-    const { indicatorInfoList } = record;
-    this.setState({
-      indicatorInfoList: indicatorInfoList || []
-    });
+  okHandler = (oId) => {
+    const { onOk, state } = this.props;
+    if (!oId) {
+      const newObj = state.objManagement.createObj;
+      onOk(newObj);
+    } else {
+      const reqObj = state.objManagement.list.find((item) => {
+        return item.id == oId;
+      });
+      onOk(reqObj);
+    }
+    this.hideModalHandler();
   }
 
   renderIndicatorOptions = () => {
@@ -93,74 +64,75 @@ class CreateObj extends Component {
     })
   }
 
-  renderIndesList = () => {
-    const { indicatorInfoList } = this.state;
-    const { form } = this.props;
+  renderIndesList = (objId) => {
+    // const { indicatorInfoList } = this.state;
+    const { form, record } = this.props;
     const { getFieldDecorator } = form;
-    return indicatorInfoList.map((item, i) => {
+    if (!record.indicatorInfoList) {
+      return '';
+    }
+    return record.indicatorInfoList.map((item, i) => {
       const { id, impactFactor } = item;
       return (
-        <Row key={Math.random()}>
+        <Row key={item.key}>
           <Col span={9}>
-            <FormItem
-            >
-              {
-                getFieldDecorator(`indexId_${i}`, {
-                  initialValue: id,
-                })(<Select onChange={(val) => { this.handleObjIndexIdChange(val, i) }} >
-                  {this.renderIndicatorOptions()}
-                </Select>)
-              }
+            <FormItem>
+              <Select value={id} onChange={(val) => { this.handleObjIndexIdChange(val, i, objId) }} >
+                {this.renderIndicatorOptions()}
+              </Select>
             </FormItem>
           </Col>
           <Col span={1} />
           <Col span={9}>
-            <FormItem
-            >
-              {
-                getFieldDecorator(`impactFactors_${i}`, {
-                  initialValue: impactFactor,
-                })(<Input placeholder="推荐影响因子0.5~1" onChange={(e) => { this.handleObjimpactFactorsChange(e, i) }} />)
-              }
+            <FormItem>
+              <Input value={impactFactor} placeholder="推荐影响因子0.5~1" onChange={(e) => { this.handleObjimpactFactorsChange(e, i, objId) }} />
             </FormItem>
           </Col>
           <Col span={1} />
           <Col span={4}>
-            <Button type="danger" size="small" shape="round" onClick={() => { this.deleteObjIndex(i); }}>删除</Button>
+            <Button type="danger" size="small" shape="round" onClick={() => { this.deleteObjIndex(i, objId); }}>删除</Button>
           </Col>
         </Row>
       );
     });
   }
-  deleteObjIndex = (i) => {
-    const newState = { ...this.state };
-    const { indicatorInfoList } = newState;
-    indicatorInfoList.splice(i, 1);
-    this.setState({
-      indicatorInfoList
-    }, () => {
-      this.setFieldsValues();
-    });
-  };
-  handleObjIndexIdChange = (val, i) => {
-    var newState = { ...this.state };
-    var { indicatorInfoList } = newState;
-    indicatorInfoList[i].id = val;
-    this.setState({
-      indicatorInfoList
-    }, () => {
-      this.setFieldsValues();
+  createObjIndex = (objId) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'objManagement/createObjList',
+      value: { objId }
     });
   }
-  handleObjimpactFactorsChange = (e, i) => {
+  deleteObjIndex = (index, objId) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'objManagement/delObjList',
+      value: { index, objId }
+    });
+  };
+  handleObjIndexIdChange = (val, i, objId) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'objManagement/updateObjList',
+      value: {
+        i,
+        val,
+        type: 'id',
+        objId
+      }
+    });
+  }
+  handleObjimpactFactorsChange = (e, i, objId) => {
+    const { dispatch } = this.props
     const val = e.target.value;
-    var newState = { ...this.state };
-    var { indicatorInfoList } = newState;
-    indicatorInfoList[i].impactFactor = val;
-    this.setState({
-      indicatorInfoList
-    }, () => {
-      this.setFieldsValues();
+    dispatch({
+      type: 'objManagement/updateObjList',
+      value: {
+        i,
+        val,
+        type: 'impactFactor',
+        objId
+      }
     });
   }
   setFieldsValues = () => {
@@ -173,6 +145,18 @@ class CreateObj extends Component {
         [`impactFactors_${i}`]: indicatorInfoList[i].impactFactor
       })
     }
+  }
+
+  handleObjChange = (key, value, objId) => {
+    const { dispatch } = this.props
+    dispatch({
+      type: 'objManagement/updateNewObj',
+      value: {
+        key,
+        value,
+        objId
+      }
+    });
   }
 
   render() {
@@ -190,7 +174,7 @@ class CreateObj extends Component {
           title="监测对象管理"
           id={id}
           visible={this.state.visible}
-          onOk={this.okHandler}
+          onOk={() => { this.okHandler(id || 'new') }}
           onCancel={this.hideModalHandler}
         >
           <Form onSubmit={this.okHandler} layout="vertical">
@@ -200,7 +184,7 @@ class CreateObj extends Component {
               {
                 getFieldDecorator('objectName', {
                   initialValue: objectName,
-                })(<Input />)
+                })(<Input onChange={(e) => { this.handleObjChange('objectName', e.target.value, id || 'new'); }} />)
               }
             </FormItem>
             <FormItem
@@ -209,7 +193,7 @@ class CreateObj extends Component {
               {
                 getFieldDecorator('runThreshold', {
                   initialValue: runThreshold,
-                })(<Input />)
+                })(<Input onChange={(e) => { this.handleObjChange('runThreshold', e.target.value, id || 'new'); }} />)
               }
             </FormItem>
             <FormItem
@@ -218,7 +202,7 @@ class CreateObj extends Component {
               {
                 getFieldDecorator('levelId', {
                   initialValue: levelId,
-                })(<Select>
+                })(<Select onChange={(val) => { this.handleObjChange('levelId', val, id || 'new'); }} >
                   {this.renderLevelOptions()}
                 </Select>)
               }
@@ -228,11 +212,11 @@ class CreateObj extends Component {
                 <FormItem className={styles.removeFormItemMargin} label="运行指标设置" />
               </Col>
               <Col span={4}>
-                <Button type="primary" size="small" onClick={this.createObjIndex} shape="round">新增</Button>
+                <Button type="primary" size="small" onClick={() => { this.createObjIndex(id ? id : 'new'); }} shape="round">新增</Button>
               </Col>
             </Row>
             {
-              this.renderIndesList()
+              this.renderIndesList(id)
             }
           </Form>
         </Modal>
@@ -240,4 +224,19 @@ class CreateObj extends Component {
     );
   }
 }
-export default Form.create()(CreateObj);
+function mapStateToProps(state) {
+  const { list, total, page } = state.objManagement;
+  const { indicatorOptions, objectOptions, levelOptions } = state.global;
+  return {
+    // list: formatDataForRowSpan(list),
+    state,
+    list,
+    total,
+    page,
+    loading: state.loading.models.users,
+    indicatorOptions,
+    objectOptions,
+    levelOptions
+  };
+}
+export default connect(mapStateToProps)(Form.create()(CreateObj));

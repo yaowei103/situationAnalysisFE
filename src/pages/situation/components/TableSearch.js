@@ -1,5 +1,6 @@
 import { PureComponent, useEffect } from 'react';
 import { Form, Icon, Input, Button } from 'antd';
+import { connect } from 'dva';
 // import { formatMessage } from 'umi/locale';
 import CreateIndex from './CreateIndex';
 import CreateObj from './CreateObj';
@@ -49,8 +50,18 @@ class TableSearch extends PureComponent {
     }
   }
 
+  callIndicatorOptions = (oId) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/getIndicatorOptions',
+      payload: {
+        oId
+      }
+    });
+  }
+
   renderCreateComponent = (createType) => {
-    const { indicatorOptions, objectOptions, levelOptions } = this.props;
+    const { indicatorOptions, objectOptions, levelOptions, dispatch, state } = this.props;
     if (createType === 'index') {
       return (
         <CreateIndex
@@ -64,13 +75,14 @@ class TableSearch extends PureComponent {
     } else if (createType === 'obj') {
       return (
         <CreateObj
-          record={{}}
+          record={state.objManagement.createObj}
+          dispatch={dispatch}
           indicatorOptions={indicatorOptions}
           objectOptions={objectOptions}
           levelOptions={levelOptions}
           onOk={(values) => { this.createHandler(values, createType) }}
         >
-          <Button type="primary">新增</Button>
+          <Button type="primary" onClick={() => { this.callIndicatorOptions('new'); }}>新增</Button>
         </CreateObj>
       );
     } else if (createType === 'biz') {
@@ -121,4 +133,13 @@ class TableSearch extends PureComponent {
     );
   }
 }
-export default Form.create({ name: 'tableSearch' })(TableSearch);
+
+function mapStateToProps(state) {
+  // const { list, total, page } = state;
+  // const { indicatorOptions, objectOptions, levelOptions } = state.global;
+  return {
+    // list: formatDataForRowSpan(list),
+    state
+  };
+}
+export default connect(mapStateToProps)(Form.create({ name: 'tableSearch' })(TableSearch));

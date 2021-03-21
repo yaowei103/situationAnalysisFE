@@ -20,12 +20,6 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
       } else {
         return a['objectName'].localeCompare(b['objectName']);
       }
-    } else if (a['levelName'] == null && b['levelName'] != null) {
-      return 1;
-    } else if (a['levelName'] == null && b['levelName'] == null) {
-      return 0;
-    } else if (a['levelName'] != null && b['levelName'] == null) {
-      return -1;
     }
   });
 
@@ -97,12 +91,27 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
     return obj;
   };
 
+  const callIndicatorOptions = (oId) => {
+    dispatch({
+      type: 'global/getIndicatorOptions',
+      payload: {
+        oId
+      }
+    });
+  }
+
   const columns = [
     {
       title: '编号',
       dataIndex: 'id',
       key: 'id',
       render(text, record, index) {
+        // return {
+        //   children: record.id,
+        //   props: {
+        //     rowSpan: record.indicatorInfoList.length
+        //   },
+        // };
         return calcRowSpan('id', record, index, dataSource);
       }
     },
@@ -111,6 +120,7 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
       dataIndex: 'levelName',
       key: 'levelName',
       render(text, record, index) {
+
         return calcRowSpan('levelName', record, index, dataSource);
       }
     },
@@ -144,8 +154,8 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
           {
             record.isOriginalValue
               ? ''
-              : <CreateObj record={record} onOk={(values) => { editHandler(values, record.id) }} levelOptions={levelOptions} indicatorOptions={indicatorOptions}>
-                <a href="/">编辑</a>
+              : <CreateObj record={record} dispatch={dispatch} onOk={(values) => { editHandler(values, record.id) }} levelOptions={levelOptions} indicatorOptions={indicatorOptions}>
+                <a href="/" onClick={() => { callIndicatorOptions(record.id); }}>编辑</a>
               </CreateObj>
           }
           {
