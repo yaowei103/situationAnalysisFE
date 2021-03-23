@@ -9,9 +9,8 @@ import TableSearch from '../components/TableSearch';
 import CreateObj from '../components/CreateObj';
 
 
-function ObjManagement({ dispatch, list, loading, total, page: current, indicatorOptions, objectOptions, levelOptions, state: store }) {
+function ObjManagement({ dispatch, list, loading, total, page: current, createObj, indicatorOptions, objectOptions, levelOptions, state: store }) {
   const dataSource = JSON.parse(JSON.stringify(list));
-
   // 对数据进行排序，方便合并单元格
   dataSource.sort((a, b) => {
     if (a['levelName'] != null && b['levelName'] != null) {
@@ -77,28 +76,38 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
     return n
   };
 
-  const calcRowSpan = (calcName, row, index, data) => {
+  const calcRowSpan = (calcName, row, index, data, compare_col_name) => {
     const obj = {
       children: row[calcName],
       props: {},
     };
     // 与上一行不同，计算行数
     if ((index > 0 && row[calcName] !== data[index - 1][calcName]) || index === 0) {
-      obj.props.rowSpan = getMergeRowNum(calcName, row, data);
+      obj.props.rowSpan = getMergeRowNum(calcName, row, data, compare_col_name);
     } else {
       obj.props.rowSpan = 0;
     }
     return obj;
   };
 
-  const callIndicatorOptions = (oId) => {
+  const enditObject = (oId) => {
     dispatch({
       type: 'global/getIndicatorOptions',
       payload: {
         oId
       }
     });
+    copyObjToCreateObj(oId);
   }
+
+  const copyObjToCreateObj = (oId) => {
+    dispatch({
+      type: 'objManagement/copyObjToCreateObj',
+      value: {
+        oId
+      }
+    });
+  };
 
   const columns = [
     {
@@ -120,7 +129,6 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
       dataIndex: 'levelName',
       key: 'levelName',
       render(text, record, index) {
-
         return calcRowSpan('levelName', record, index, dataSource);
       }
     },
@@ -141,21 +149,21 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
       title: '报警阈值',
       dataIndex: 'runThreshold',
       key: 'runThreshold',
-      // render(text, record, index) {
-      //   return calcRowSpan('runThreshold', record, index, dataSource);
-      // }
+      render(text, record, index) {
+        return calcRowSpan('runThreshold', record, index, dataSource, 'objectName');
+      }
     },
     {
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
-      render: (text, record) => (
-        <span className={styles.operation}>
+      render: (text, record, index) => {
+        const child = (<span className={styles.operation}>
           {
             record.isOriginalValue
               ? ''
-              : <CreateObj record={record} dispatch={dispatch} onOk={(values) => { editHandler(values, record.id) }} levelOptions={levelOptions} indicatorOptions={indicatorOptions}>
-                <a href="/" onClick={() => { callIndicatorOptions(record.id); }}>编辑</a>
+              : <CreateObj record={createObj} dispatch={dispatch} onOk={(values) => { editHandler(values, record.id) }} levelOptions={levelOptions} indicatorOptions={indicatorOptions}>
+                <a href="/" onClick={() => { enditObject(record.id); }}>编辑</a>
               </CreateObj>
           }
           {
@@ -165,8 +173,19 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
                 <a href="/">删除</a>
               </Popconfirm>
           }
-        </span>
-      ),
+        </span>);
+        const obj = {
+          children: child,
+          props: {},
+        };
+        // 与上一行不同，计算行数
+        if ((index > 0 && record.objectName !== dataSource[index - 1].objectName) || index === 0) {
+          obj.props.rowSpan = getMergeRowNum('operation', record, dataSource, 'objectName');
+        } else {
+          obj.props.rowSpan = 0;
+        }
+        return obj;
+      },
     },
   ];
 
@@ -195,7 +214,7 @@ function ObjManagement({ dispatch, list, loading, total, page: current, indicato
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.objManagement;
+  const { list, total, page, createObj } = state.objManagement;
   const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
     // list: formatDataForRowSpan(list),
@@ -206,7 +225,8 @@ function mapStateToProps(state) {
     loading: state.loading.models.users,
     indicatorOptions,
     objectOptions,
-    levelOptions
+    levelOptions,
+    createObj
   };
 }
 export default connect(mapStateToProps)(ObjManagement);

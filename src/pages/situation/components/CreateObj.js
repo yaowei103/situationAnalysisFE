@@ -38,17 +38,42 @@ class CreateObj extends Component {
 
   okHandler = (oId) => {
     const { onOk, state } = this.props;
-    if (!oId) {
-      const newObj = state.objManagement.createObj;
-      onOk(newObj);
-    } else {
-      const reqObj = state.objManagement.list.find((item) => {
-        return item.id == oId;
-      });
-      onOk(reqObj);
-    }
+    // if (!oId || oId == 'new') {
+    //   const newObj = state.objManagement.createObj;
+    //   onOk(newObj);
+    // } else {
+    //   const reqObj = state.objManagement.list.find((item) => {
+    //     return item.id == oId;
+    //   });
+    //   onOk(reqObj);
+    // }
+    const newObj = state.objManagement.createObj;
+    onOk(newObj);
     this.hideModalHandler();
   }
+
+  getDifference = (arr1, arr2, typeName) => {
+    return Object.values(arr1.concat(arr2).reduce((acc, cur) => {
+      if (acc[cur[typeName]] && acc[cur[typeName]][typeName] === cur[typeName]) {
+        delete acc[cur[typeName]];
+      } else {
+        acc[cur[typeName]] = cur;
+      }
+      return acc;
+    }, {}));
+  }
+
+  // renderIndicatorOptions = () => {
+  //   const { indicatorOptions, record } = this.props;
+  //   const { indicatorInfoList } = record;
+  //   let newIndicatorOptions
+  //   if (indicatorInfoList && indicatorOptions) {
+  //     newIndicatorOptions = this.getDifference(indicatorOptions, indicatorInfoList, 'id')
+  //   }
+  //   return newIndicatorOptions && newIndicatorOptions.map((item, index) => {
+  //     return <Option key={item.id} value={item.id}>{item.name}</Option>;
+  //   })
+  // }
 
   renderIndicatorOptions = () => {
     const { indicatorOptions } = this.props;
@@ -148,7 +173,7 @@ class CreateObj extends Component {
   }
 
   handleObjChange = (key, value, objId) => {
-    const { dispatch } = this.props
+    const { dispatch } = this.props;
     dispatch({
       type: 'objManagement/updateNewObj',
       value: {
@@ -161,10 +186,12 @@ class CreateObj extends Component {
 
   render() {
     const { children, form, record, levelOptions } = this.props;
-    const { getFieldDecorator } = form;
-    const { id, objectName, runThreshold, levelName } = record;
-    const levelObj = levelOptions.find((item) => { return item.name === levelName })
-    const levelId = levelObj && levelObj.id;
+    if (!record) {
+      return '';
+    }
+    const { id, objectName, runThreshold, levelName, levelId } = record;
+    // const levelObj = levelOptions.find((item) => { return item.name === levelName })
+    // const levelId = levelObj && levelObj.id;
     return (
       <span>
         <span onClick={this.showModalHandler}>
@@ -172,7 +199,7 @@ class CreateObj extends Component {
         </span>
         <Modal
           title="监测对象管理"
-          id={id}
+          id={id || 'new'}
           visible={this.state.visible}
           onOk={() => { this.okHandler(id || 'new') }}
           onCancel={this.hideModalHandler}
@@ -181,42 +208,30 @@ class CreateObj extends Component {
             <FormItem
               label="监测对象名称"
             >
-              {
-                getFieldDecorator('objectName', {
-                  initialValue: objectName,
-                })(<Input onChange={(e) => { this.handleObjChange('objectName', e.target.value, id || 'new'); }} />)
-              }
+              <Input value={objectName} onChange={(e) => { this.handleObjChange('objectName', e.target.value, id || 'new'); }} />
             </FormItem>
             <FormItem
               label="预警阈值"
             >
-              {
-                getFieldDecorator('runThreshold', {
-                  initialValue: runThreshold,
-                })(<Input onChange={(e) => { this.handleObjChange('runThreshold', e.target.value, id || 'new'); }} />)
-              }
+              <Input value={runThreshold} onChange={(e) => { this.handleObjChange('runThreshold', e.target.value, id || 'new'); }} />
             </FormItem>
             <FormItem
               label="所属层次"
             >
-              {
-                getFieldDecorator('levelId', {
-                  initialValue: levelId,
-                })(<Select onChange={(val) => { this.handleObjChange('levelId', val, id || 'new'); }} >
-                  {this.renderLevelOptions()}
-                </Select>)
-              }
+              <Select value={levelId} onChange={(val) => { this.handleObjChange('levelId', val, id || 'new'); }} >
+                {this.renderLevelOptions()}
+              </Select>
             </FormItem>
             <Row className={styles.rowMarginBottom}>
               <Col span={16} className={styles.growCol}>
                 <FormItem className={styles.removeFormItemMargin} label="运行指标设置" />
               </Col>
               <Col span={4}>
-                <Button type="primary" size="small" onClick={() => { this.createObjIndex(id ? id : 'new'); }} shape="round">新增</Button>
+                <Button type="primary" size="small" onClick={() => { this.createObjIndex(id || 'new'); }} shape="round">新增</Button>
               </Col>
             </Row>
             {
-              this.renderIndesList(id)
+              this.renderIndesList(id || 'new')
             }
           </Form>
         </Modal>

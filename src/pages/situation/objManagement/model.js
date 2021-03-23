@@ -13,7 +13,6 @@ export default {
             indicatorName: "",
             isOriginalValue: "",
             lastIndexKey: 0,
-            levelName: '',
             objectName: '',
             runThreshold: ''
         }
@@ -62,15 +61,13 @@ export default {
         *delObjList({ value }, { call, put }) {
             yield put({ type: 'delObjListOne', value });
         },
-        // below old
         *updateObj({ payload: values }, { call, put }) {
             yield call(api.updateObj, values);
             yield put({ type: 'reload' });
         },
-        *updateNewObj({ value }, { call, put }) {
+        *updateNewObj({ value }, { call, put, select }) {
             yield put({ type: 'updateNewObjOne', value });
         },
-
         *createObj({ payload: values }, { call, put, select }) {
             const createObj = yield select(state => state.objManagement.createObj);
             yield call(api.createObj, createObj);
@@ -85,6 +82,12 @@ export default {
             const page = yield select(state => state.objManagement.page);
             yield put({ type: 'fetchObj', payload: { page, keyWord: '' } });
         },
+        *copyObjToCreateObj({ value }, { call, put }) {
+            yield put({ type: 'copyObjToCreateObjFn', value });
+        },
+        *emptyCreateObj({ value }, { call, put }) {
+            yield put({ type: 'emptyCreateObjFn', value });
+        },
     },
 
     reducers: {
@@ -94,55 +97,23 @@ export default {
         updateObjListOne(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
             const { val, i, objId, type } = action.value;
-            if (objId == undefined || objId == 'new') {
-                newState.createObj.indicatorInfoList[i][type] = val;
-                debugger;
-                return {
-                    ...state,
-                    ...newState
-                }
-            } else {
-                const newObj = newState.list.find((item) => {
-                    return item.id == objId;
-                });
-                if (newObj.indicatorInfoList[i]) {
-                    newObj.indicatorInfoList[i][type] = val;
-                } else {
-                    newObj.indicatorInfoList.push({
-                        [type]: val,
-                        name: ''
-                    })
-                }
-                return {
-                    ...state,
-                    ...newState
-                }
+            newState.createObj.indicatorInfoList[i][type] = val;
+            return {
+                ...state,
+                ...newState
             }
         },
         createObjListOne(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
             const { objId } = action.value;
-            if (objId == undefined || objId == 'new') {
-                const { createObj } = newState;
-                createObj.indicatorInfoList.push({
-                    id: '',
-                    impactFactor: '',
-                    // key: createObj.lastIndexKey
-                    key: Math.random()
-                });
-                createObj.lastIndexKey = createObj.lastIndexKey + 1;
-            } else {
-                const targetObj = newState.list.find((item) => {
-                    return item.id == objId;
-                });
-                targetObj.lastIndexKey = targetObj.lastIndexKey + 1;
-                targetObj.indicatorInfoList.push({
-                    id: '',
-                    impactFactor: '',
-                    // key: createObj.lastIndexKey
-                    key: targetObj.lastIndexKey
-                });
-            }
+            const { createObj } = newState;
+            createObj.indicatorInfoList.push({
+                id: '',
+                impactFactor: '',
+                // key: createObj.lastIndexKey
+                key: Math.random()
+            });
+            createObj.lastIndexKey = createObj.lastIndexKey + 1;
             return {
                 ...state,
                 ...newState,
@@ -151,27 +122,44 @@ export default {
         delObjListOne(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
             const { index, objId } = action.value;
-            if (objId == undefined || objId == 'new') {
-                newState.createObj.indicatorInfoList.splice(index, 1);
-                return {
-                    ...state,
-                    ...newState
-                };
-            } else {
-                const newObj = newState.list.find((item) => {
-                    return item.id == objId;
+            newState.createObj.indicatorInfoList.splice(index, 1);
+            return {
+                ...state,
+                ...newState
+            };
+        },
+        copyObjToCreateObjFn(state, action) {
+            const newState = JSON.parse(JSON.stringify(state));
+            const { oId } = action.value;
+            if (oId != undefined && oId != 'new') {
+                newState.createObj = newState.list.find((item) => {
+                    return item.id == oId;
                 });
-                newObj.indicatorInfoList.splice(index, 1);
-                return {
-                    ...state,
-                    ...newState
-                };
+            }
+            return {
+                ...state,
+                ...newState
             }
         },
         updateNewObjOne(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
-            const { key, value } = action.value;
+            const { key, value, objId } = action.value;
             newState.createObj[key] = value;
+            return {
+                ...state,
+                ...newState
+            }
+        },
+        emptyCreateObjFn(state, action) {
+            const newState = JSON.parse(JSON.stringify(state));
+            newState.createObj = {
+                indicatorInfoList: [],
+                indicatorName: "",
+                isOriginalValue: "",
+                lastIndexKey: 0,
+                objectName: '',
+                runThreshold: ''
+            };
             return {
                 ...state,
                 ...newState

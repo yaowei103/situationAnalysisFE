@@ -52,11 +52,20 @@ class TableSearch extends PureComponent {
 
   callIndicatorOptions = (oId) => {
     const { dispatch } = this.props;
+    this.emptyCreateObj();
     dispatch({
       type: 'global/getIndicatorOptions',
       payload: {
         oId
       }
+    });
+  }
+
+  emptyCreateObj = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'objManagement/emptyCreateObj',
+      value: {}
     });
   }
 

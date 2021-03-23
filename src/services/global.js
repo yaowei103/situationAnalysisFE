@@ -36,7 +36,7 @@ export function getObjectOptions() {
 }
 
 export function getIndicatorOptions(payload) {
-  return request(`/indicatorOptions${payload.oId ? `?oId=${payload.oId}` : ''}`, {
+  return request(`/indicatorOptions${(payload.oId != undefined && payload.oId != 'new') ? `?oId=${payload.oId}` : ''}`, {
     method: 'GET'
   });
 }
