@@ -55,12 +55,15 @@ class PageHeader extends PureComponent {
         });
     }
     render() {
-        const { isShow, title, description } = this.props;
+        const { isShow, title, description, location } = this.props;
+        const { query: { hideMenu } } = location;
+        debugger;
         const { breadcrumbData } = this.state;
         return (
             <div className={classnames(styles.wrapper, {
                 [styles.hide]: !isShow,
             })}
+                style={{ display: hideMenu === 'true' ? 'none' : 'block' }}
             >
                 <Breadcrumb breadcrumbList={breadcrumbData} />
                 <h2 className={classnames(styles.title, {

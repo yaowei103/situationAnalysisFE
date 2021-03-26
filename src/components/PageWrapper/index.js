@@ -59,7 +59,8 @@ class PageWrapper extends PureComponent {
                             className={styles.children}
                             style={{
                                 display: flex === true ? 'flex' : "block",
-                                ...style
+                                ...style,
+                                marginTop: location.query.hideMenu === 'true' ? '0' : ''
                             }}>
                             {/* {loading && <Loader spinning />} */}
                             {children}

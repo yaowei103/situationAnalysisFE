@@ -11,17 +11,26 @@ netstat -anp |grep 8011
 
 nginx.conf
 server {
-    listen       8088;
-    server_name  localhost;
-    location / {
-        root   /webapp/situationFE;
-        index  index.html index.htm;
+        listen       8088;
+        server_name  localhost;
+
+
+        location / {
+            return 301 http://106.12.165.67:8089$uri?hideMenu=true;
+
+        }
     }
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   html;
+
+    server {
+        listen       8089;
+        server_name  localhost;
+        location / {
+            root   /webapp/situationAnalysisFE;
+            index  index.html index.htm;
+            try_files $uri $uri/ /index.html;
+        }
+
     }
-}
 
 
 https://www.cnblogs.com/gzyx1988/p/4939088.html

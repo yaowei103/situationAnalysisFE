@@ -74,7 +74,7 @@ class MainMenu extends PureComponent {
   }
   render() {
     const { location, defaultKey, menuTheme, menusData, mode } = this.props;
-    const { pathname, state: pathState } = location;
+    const { pathname, state: pathState, query: { hideMenu } } = location;
     const menus = this.renderMenu(menusData);
     const { key } = pathState || queryKeysByPath(pathname, menusData);
     return (

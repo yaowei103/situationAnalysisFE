@@ -129,11 +129,18 @@ class Platform extends PureComponent {
             screen
         };
     }
+    calcMarginLeft(hideMenu, collapsed) {
+        if (hideMenu === 'true') {
+            return '0';
+        } else {
+            return collapsed ? 80 : 200
+        }
+    }
     render() {
         // 侧边栏状态
         const { collapsed } = this.state;
         const { location, menusData = [], } = this.props;
-        const { pathname, state: pathstate } = location;
+        const { pathname, state: pathstate, query: { hideMenu } } = location;
         const { key } = pathstate || {};
         // 菜单默认key
         const defaultKey = key || _getKey(pathname);
@@ -154,6 +161,7 @@ class Platform extends PureComponent {
                                 collapsible
                                 collapsed={collapsed}
                                 className={styles.sider}
+                                style={{ display: hideMenu === 'true' ? 'none' : 'block' }}
                             >
                                 {/* LOGO */}
                                 <Logo collapsed={collapsed} />
@@ -166,9 +174,9 @@ class Platform extends PureComponent {
                                 />
                             </Sider>
                             {/* 系统主体部分 */}
-                            <Layout id="backTop" className={styles.container} style={{ marginLeft: collapsed ? 80 : 200 }}>
+                            <Layout id="backTop" className={styles.container} style={{ marginLeft: this.calcMarginLeft(hideMenu, collapsed) }}>
                                 {/* 系统头部 */}
-                                <Header className={styles.contentHeader}>
+                                <Header className={styles.contentHeader} style={{ display: hideMenu === 'true' ? 'none' : 'flex' }}>
                                     <div style={{ width: 100 }}>
                                         <Icon
                                             className={styles.trigger}
