@@ -69,6 +69,25 @@ class TableSearch extends PureComponent {
     });
   }
 
+  callObjectOptions = (bId) => {
+    const { dispatch } = this.props;
+    this.emptyCreateBiz();
+    dispatch({
+      type: 'global/getObjectOptions',
+      payload: {
+        bId
+      }
+    });
+  }
+
+  emptyCreateBiz = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'bizSystemManagement/emptyCreateBiz',
+      value: {}
+    });
+  }
+
   renderCreateComponent = (createType) => {
     const { indicatorOptions, objectOptions, levelOptions, dispatch, state } = this.props;
     if (createType === 'index') {
@@ -97,13 +116,14 @@ class TableSearch extends PureComponent {
     } else if (createType === 'biz') {
       return (
         <CreateBizSys
-          record={{}}
+          record={state.bizSystemManagement.createBiz}
+          dispatch={dispatch}
           indicatorOptions={indicatorOptions}
           objectOptions={objectOptions}
           levelOptions={levelOptions}
           onOk={(values) => { this.createHandler(values, createType) }}
         >
-          <Button type="primary">新增</Button>
+          <Button type="primary" onClick={() => { this.callObjectOptions('new'); }}>新增</Button>
         </CreateBizSys>
       );
     }

@@ -96,7 +96,14 @@ export default {
         },
         updateObjListOne(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
-            const { val, i, objId, type } = action.value;
+            const { val, i, objId, type, message } = action.value;
+            if (type == 'id') {
+                const existIndicator = newState.createObj.indicatorInfoList.find(item => (item.id == val));
+                if (existIndicator) {
+                    existIndicator && message.error('不能绑定相同的运行指标到同一个对象下！');
+                    return newState;
+                }
+            }
             newState.createObj.indicatorInfoList[i][type] = val;
             return {
                 ...state,

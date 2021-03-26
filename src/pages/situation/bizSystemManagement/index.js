@@ -8,7 +8,7 @@ import CreateBizSys from '../components/CreateBizSys';
 import TableSearch from '../components/TableSearch';
 
 
-function BizSystemManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions }) {
+function BizSystemManagement({ dispatch, list: dataSource, loading, total, page: current, indicatorOptions, objectOptions, levelOptions, createBiz }) {
   function deleteHandler(id) {
     // 调用models users 内remove方法
     dispatch({
@@ -45,6 +45,24 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
       }
     });
   }
+  const enditBiz = (bId) => {
+    dispatch({
+      type: 'global/getObjectOptions',
+      payload: {
+        bId
+      }
+    });
+    copyBizToCreateBiz(bId);
+  }
+
+  const copyBizToCreateBiz = (bId) => {
+    dispatch({
+      type: 'bizSystemManagement/copyBizToCreateBiz',
+      value: {
+        bId
+      }
+    });
+  };
   /**
    * id: '@id',
         belongToObj: '@name',
@@ -104,10 +122,14 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
           {
             record.isOriginalValue
               ? ''
-              : <CreateBizSys record={record} onOk={editHandler.bind(null, record.id)} indicatorOptions={indicatorOptions}
+              : <CreateBizSys
+                record={createBiz}
+                onOk={editHandler.bind(null, record.id)} indicatorOptions={indicatorOptions}
                 objectOptions={objectOptions}
-                levelOptions={levelOptions}>
-                <a href="/">编辑</a>
+                levelOptions={levelOptions}
+                dispatch={dispatch}
+              >
+                <a href="/" onClick={() => { enditBiz(record.id); }}>编辑</a>
               </CreateBizSys>
           }
           {
@@ -152,7 +174,7 @@ function BizSystemManagement({ dispatch, list: dataSource, loading, total, page:
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.bizSystemManagement;
+  const { list, total, page, createBiz } = state.bizSystemManagement;
   const { indicatorOptions, objectOptions, levelOptions } = state.global;
   return {
     list,
@@ -161,7 +183,8 @@ function mapStateToProps(state) {
     loading: state.loading.models.users,
     indicatorOptions,
     objectOptions,
-    levelOptions
+    levelOptions,
+    createBiz
   };
 }
 export default connect(mapStateToProps)(BizSystemManagement);

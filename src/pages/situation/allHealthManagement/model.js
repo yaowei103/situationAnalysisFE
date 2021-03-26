@@ -53,11 +53,23 @@ export default {
             // const page = yield select(state => state.users.page);
             yield put({ type: 'fetch', payload: { page: 1, keyWord: '' } });
         },
+        *updateLocalLevel({ value }, { put, select }) {
+            yield put({ type: 'updateLocalLevelOne', value });
+        },
     },
 
     reducers: {
         save(state, action) {
             return { ...state, ...action.payload };
+        },
+        updateLocalLevelOne(state, action) {
+            const newState = JSON.parse(JSON.stringify(state));
+            const { healthItemId, field, value } = action.value;
+            newState.list.find((item) => { return item.id == healthItemId })[field] = value;
+            return {
+                ...state,
+                ...newState
+            };
         },
         addOneObj(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
@@ -66,6 +78,7 @@ export default {
                 if (item.id === id) {
                     const newItem = { ...item };
                     newItem.objectList.push({
+                        id: '',
                         objectName: '',
                         impactFactor: ''
                     });
@@ -87,10 +100,17 @@ export default {
         },
         changeObj(state, action) {
             const newState = JSON.parse(JSON.stringify(state));
-            const { sign, val } = action.value;
+            const { sign, val, message } = action.value;
             const [key, healthItemId, objIndex] = sign.split('_');
             const objectList = newState.list.find((item) => { return item.id == healthItemId }).objectList;
             const objKey = key === 'impactFactor' ? key : 'id';
+            if (objKey == 'id') {
+                const existObj = objectList.find(item => (item.id == val));
+                if (existObj) {
+                    existObj && message.error('禁止添加重复的对象到一个层次');
+                    return state;
+                }
+            }
             objectList[objIndex] = {
                 ...objectList[objIndex],
                 [objKey]: val

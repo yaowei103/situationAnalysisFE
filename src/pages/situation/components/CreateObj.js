@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
 import { connect } from 'dva';
-import { Modal, Form, Input, Select, Button, Row, Col } from 'antd';
+import { Modal, Form, Input, Select, Button, Row, Col, message } from 'antd';
 import styles from './index.css';
 // import reactTestRendererProductionMin from 'react-test-renderer/cjs/react-test-renderer.production.min';
 const { TextArea } = Input;
@@ -143,7 +143,8 @@ class CreateObj extends Component {
         i,
         val,
         type: 'id',
-        objId
+        objId,
+        message
       }
     });
   }
@@ -156,7 +157,8 @@ class CreateObj extends Component {
         i,
         val,
         type: 'impactFactor',
-        objId
+        objId,
+        message
       }
     });
   }

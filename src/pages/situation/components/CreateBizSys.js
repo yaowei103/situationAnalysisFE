@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'dva';
 // import ReactDOM from 'react-dom';
-import { Modal, Form, Input, Select, Button, Row, Col } from 'antd';
+import { Modal, Form, Input, Select, Button, Row, Col, message } from 'antd';
 import styles from './index.css';
 // import reactTestRendererProductionMin from 'react-test-renderer/cjs/react-test-renderer.production.min';
-const { TextArea } = Input;
+// const { TextArea } = Input;
 const { Option } = Select;
 
 const FormItem = Form.Item;
@@ -12,7 +13,7 @@ const CreateBizSys = (props) => {
     visible: false,
     objInformationList: props.record.objectList || []
   });
-  const { children, form, record } = props;
+  const { children, form, record, allState } = props;
   const { getFieldDecorator } = form;
   const { id, name, runThreshold, objectList } = record;
 
@@ -49,53 +50,11 @@ const CreateBizSys = (props) => {
     }));
   }
 
-  const mapIndicatorResult = (reqId) => {
-    const { objectOptions } = props;
-    return objectOptions.find((item, index) => {
-      return item.id === reqId;
-    });
-  }
-
   const okHandler = () => {
-    const { onOk } = props;
-    props.form.validateFields((err, values) => {
-      if (!err) {
-        // 组装数据；
-        const { objInformationList } = state;
-        const indexLength = objInformationList.length;
-        var reqObj = {
-          name: values.name,
-          platform: "解析系统1",
-          impactFactor: 2,
-          runThreshold: Number(values.runThreshold),
-          objectList: []
-        };
-        if (id) {
-          reqObj.id = id;
-        }
-        for (let i = 0; i < indexLength; i++) {
-          reqObj.objectList.push({
-            id: values[`indexId_${i}`],
-            objectName: mapIndicatorResult(values[`indexId_${i}`]).name,
-            impactFactor: Number(values[`impactFactors_${i}`])
-          });
-        }
-        onOk(reqObj);
-        hideModalHandler();
-      }
-    });
-  }
-  const createObjIndex = () => {
-    const newState = { ...state };
-    const newIndexArr = newState.objInformationList;
-    newIndexArr.push({
-      id: '',
-      impactFactor: ''
-    })
-    setState((state) => ({
-      ...state,
-      objInformationList: newIndexArr
-    }))
+    const { onOk, allState } = props;
+    const newBiz = allState.bizSystemManagement.createBiz;
+    onOk(newBiz);
+    hideModalHandler();
   }
 
   const renderObjectOptions = () => {
@@ -105,86 +64,75 @@ const CreateBizSys = (props) => {
     })
   }
 
-  const renderList = () => {
+  const renderList = (bId) => {
     const { objInformationList } = state;
     const { form } = props;
-    const { getFieldDecorator } = form;
     return objInformationList.map((item, i) => {
       const { id, impactFactor } = item;
       return (
-        <Row key={Math.random()}>
+        <Row key={item.key}>
           <Col span={9}>
             <FormItem
             >
-              {
-                getFieldDecorator(`indexId_${i}`, {
-                  initialValue: id,
-                })(<Select onChange={(val) => { handleObjIndexIdChange(val, i) }} >
-                  {renderObjectOptions()}
-                </Select>)
-              }
+              <Select value={id} onChange={(val) => { handleBizObjIdChange('id', val, i, id) }} >
+                {renderObjectOptions()}
+              </Select>
             </FormItem>
           </Col>
           <Col span={1} />
           <Col span={9}>
             <FormItem
             >
-              {
-                getFieldDecorator(`impactFactors_${i}`, {
-                  initialValue: impactFactor,
-                })(<Input placeholder="推荐影响因子0.5~1" onChange={(e) => { handleObjimpactFactorsChange(e, i) }} />)
-              }
+              <Input value={impactFactor} placeholder="推荐影响因子0.5~1" onChange={(e) => { handleBizObjIdChange('impactFactor', e.target.value, i, id) }} />
             </FormItem>
           </Col>
           <Col span={1} />
           <Col span={4}>
-            <Button type="danger" size="small" shape="round" onClick={() => { deleteObjIndex(i); }}>删除</Button>
+            <Button type="danger" size="small" shape="round" onClick={() => { deleteBizObj(i, bId); }}>删除</Button>
           </Col>
         </Row>
       );
     });
   }
-  const deleteObjIndex = (i) => {
-    const newState = { ...state };
-    const { objInformationList } = newState;
-    objInformationList.splice(i, 1);
-    setState((state) => ({
-      ...state,
-      objInformationList
-    }));
-    setFieldsValues();
+  const deleteBizObj = (index, bId) => {
+    const { dispatch } = props;
+    dispatch({
+      type: 'bizSystemManagement/delBizList',
+      value: { index, bId }
+    });
   };
-  const handleObjIndexIdChange = (val, i) => {
-    var newState = { ...state };
-    var { objInformationList } = newState;
-    objInformationList[i].id = val;
-    setState((state) => ({
-      ...state,
-      objInformationList
-    }));
-    setFieldsValues();
+  const handleBizObjIdChange = (type, val, i, bId) => {
+    const { dispatch } = props;
+    dispatch({
+      type: 'bizSystemManagement/updateBizList',
+      value: {
+        i,
+        val,
+        type,
+        bId,
+        message
+      }
+    });
   }
-  const handleObjimpactFactorsChange = (e, i) => {
-    const val = e.target.value;
-    var newState = { ...state };
-    var { objInformationList } = newState;
-    objInformationList[i].impactFactor = val;
-    setState((state) => ({
-      ...state,
-      objInformationList
-    }));
-    setFieldsValues();
+
+  const handleBizChange = (key, value, bId) => {
+    const { dispatch } = props;
+    dispatch({
+      type: 'bizSystemManagement/updateNewBiz',
+      value: {
+        key,
+        value,
+        bId
+      }
+    });
   }
-  const setFieldsValues = () => {
-    const { form } = props;
-    const { setFieldsValue } = form;
-    var { objInformationList } = state;
-    for (let i = 0; i < objInformationList.length; i++) {
-      setFieldsValue({
-        [`indexId_${i}`]: objInformationList[i].id,
-        [`impactFactors_${i}`]: objInformationList[i].impactFactor
-      })
-    }
+
+  const createBizObj = (bId) => {
+    const { dispatch } = props;
+    dispatch({
+      type: 'bizSystemManagement/createBizList',
+      value: { bId }
+    });
   }
 
   return (
@@ -203,35 +151,42 @@ const CreateBizSys = (props) => {
           <FormItem
             label="业务系统名称"
           >
-            {
-              getFieldDecorator('name', {
-                initialValue: name,
-              })(<Input />)
-            }
+            <Input value={name} onChange={(e) => { handleBizChange('name', e.target.value, id || 'new') }} />
           </FormItem>
           <FormItem
             label="预警阈值"
           >
-            {
-              getFieldDecorator('runThreshold', {
-                initialValue: runThreshold,
-              })(<Input />)
-            }
+            <Input value={runThreshold} onChange={(e) => { handleBizChange('runThreshold', e.target.value, id || 'new') }} />
           </FormItem>
           <Row className={styles.rowMarginBottom}>
             <Col span={16} className={styles.growCol}>
               <FormItem className={styles.removeFormItemMargin} label="对象设置" />
             </Col>
             <Col span={4}>
-              <Button type="primary" size="small" onClick={createObjIndex} shape="round">新增</Button>
+              <Button type="primary" size="small" onClick={() => { createBizObj(id || 'new') }} shape="round">新增</Button>
             </Col>
           </Row>
           {
-            renderList()
+            renderList(id)
           }
         </Form>
       </Modal>
     </span>
   );
 }
-export default Form.create()(CreateBizSys);
+function mapStateToProps(state) {
+  const { list, total, page } = state.bizSystemManagement;
+  const { indicatorOptions, objectOptions, levelOptions } = state.global;
+  return {
+    // list: formatDataForRowSpan(list),
+    allState: state,
+    list,
+    total,
+    page,
+    loading: state.loading.models.users,
+    indicatorOptions,
+    objectOptions,
+    levelOptions
+  };
+}
+export default connect(mapStateToProps)(Form.create()(CreateBizSys));

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
-import { Button, Select, Row, Col, Popconfirm, Form, Input, Divider } from 'antd';
+import { Button, Select, Row, Col, Popconfirm, Form, Input, Divider, message } from 'antd';
 // import { Page } from '@components';
 import styles from './index.css';
 import CreateAllHealthObj from './CreateAllHealthObj';
@@ -73,7 +73,8 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
       type: 'allHealth/changeObj',
       value: {
         sign,
-        val
+        val,
+        message
       }
     });
   }
@@ -88,13 +89,25 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
     });
   }
 
-  const renderSelect = (objectOptions) => {
-    return objectOptions && objectOptions.map((item, i) => {
-      return <Select.Option key={i} value={item.id}>{item.name}</Select.Option>;
+  const updateLocalLevel = (healthItemId, field, value) => {
+    dispatch({
+      type: 'allHealth/updateLocalLevel',
+      value: {
+        healthItemId,
+        field,
+        value
+      }
     });
   }
 
-  const renderObjList = (objectList, healthItemId) => {
+  const renderSelect = (objectList, objectOptions) => {
+    const allObjArr = objectList.concat(objectOptions);
+    return allObjArr && allObjArr.map((item) => {
+      return <Select.Option key={item.id} value={item.id}>{item.name || item.objectName}</Select.Option>;
+    });
+  }
+
+  const renderObjList = (objectList, healthItem) => {
     return objectList && objectList.map((item, index) => {
       return (
         <Row className={styles.itemRow} key={item.id}>
@@ -104,7 +117,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
               {...formAllWidthItemLayout}
             >
               {
-                getFieldDecorator(`id_${healthItemId}_${item.id}`, {
+                getFieldDecorator(`id_${healthItem.id}_${item.id}`, {
                   initialValue: item.id,
                 })(<input />)
               }
@@ -113,15 +126,11 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
               style={styleBottom0}
               {...formAllWidthItemLayout}
             >
-              {
-                getFieldDecorator(`objectName_${healthItemId}_${item.id}`, {
-                  initialValue: item.id,
-                })(<Select className={styles.select} onChange={(val) => { handleObjChange(`objectName_${healthItemId}_${index}`, val); }}>
-                  {
-                    renderSelect(objectOptions)
-                  }
-                </Select>)
-              }
+              <Select value={item.id} className={styles.select} onChange={(val) => { handleObjChange(`objectName_${healthItem.id}_${index}`, val); }}>
+                {
+                  renderSelect(healthItem.objectList, objectOptions)
+                }
+              </Select>
             </FormItem>
           </Col>
           <Col span={6} className={styles.col}>
@@ -130,15 +139,11 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
               {...formItemLayout}
               label="影响因子"
             >
-              {
-                getFieldDecorator(`impactFactor_${healthItemId}_${item.id}`, {
-                  initialValue: item.impactFactor,
-                })(<Input onChange={(e) => { handleObjChange(`impactFactor_${healthItemId}_${index}`, e.target.value); }} />)
-              }
+              <Input value={item.impactFactor} onChange={(e) => { handleObjChange(`impactFactor_${healthItem.id}_${index}`, e.target.value); }} />
             </FormItem>
           </Col>
           <Col span={6} className={styles.col}>
-            <Popconfirm title="确认删除吗？" onConfirm={() => { deleteHandler(healthItemId, item.id); }}>
+            <Popconfirm title="确认删除吗？" onConfirm={() => { deleteHandler(healthItem.id, item.id); }}>
               <Button type="danger" size="small" shape="round">删除</Button>
             </Popconfirm>
           </Col>
@@ -169,11 +174,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
             style={styleBottom10}
             label="影响因子:"
           >
-            {
-              getFieldDecorator(`impactFactor_${listItem.id}`, {
-                initialValue: listItem.impactFactor,
-              })(<Input />)
-            }
+            <Input value={listItem.impactFactor} onChange={(e) => { updateLocalLevel(listItem.id, 'impactFactor', e.target.value) }} />
           </FormItem>
         </Col>
         <Col span={6} className={styles.col}>
@@ -182,11 +183,7 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
             style={styleBottom10}
             label="预警阈值:"
           >
-            {
-              getFieldDecorator(`runThreshold_${listItem.id}`, {
-                initialValue: listItem.runThreshold,
-              })(<Input />)
-            }
+            <Input value={listItem.runThreshold} onChange={(e) => { updateLocalLevel(listItem.id, 'runThreshold', e.target.value) }} />
           </FormItem>
         </Col>
         <Col span={6} className={styles.col}>
@@ -194,10 +191,11 @@ function HealthItem({ dispatch, objectOptions, listItem, form }) {
         </Col>
       </Row>
       <Row className={styles.titleRow}>
-        <span>对象设置</span><Button className={styles.createBtn} disabled={state.disabledCreate} onClick={() => { createLevelObj(listItem.id) }} type="primary" shape="round" size="small" >新增</Button>
+        <span>对象设置</span>
+        <Button className={styles.createBtn} disabled={state.disabledCreate} onClick={() => { createLevelObj(listItem.id) }} type="primary" shape="round" size="small" >新增</Button>
       </Row>
       {
-        renderObjList(listItem.objectList, listItem.id)
+        renderObjList(listItem.objectList, listItem)
       }
       <Divider />
     </div>

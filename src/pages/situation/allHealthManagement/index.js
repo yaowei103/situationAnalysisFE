@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'dva';
 // import { Link } from 'umi';
-import { Form, Pagination, Popconfirm, Row, Col, Button } from 'antd';
+import { Form } from 'antd';
 import { Page } from '@components';
 import styles from './index.css';
 // import UserModal from '../components/Modal';
@@ -14,16 +14,6 @@ function IndexManagement({ dispatch, list, form }) {
     });
   }, [])
 
-  const deleteItem = () => {
-
-  }
-
-  const createHandler = (values) => {
-    dispatch({
-      type: 'users/create',
-      payload: values,
-    });
-  }
   return (
     <Page loading={false}>
       <Form>

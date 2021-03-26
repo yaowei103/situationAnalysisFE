@@ -57,7 +57,6 @@ class PageHeader extends PureComponent {
     render() {
         const { isShow, title, description, location } = this.props;
         const { query: { hideMenu } } = location;
-        debugger;
         const { breadcrumbData } = this.state;
         return (
             <div className={classnames(styles.wrapper, {
