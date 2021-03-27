@@ -5,7 +5,9 @@
 import { extend } from 'umi-request';
 import { notification } from 'antd';
 import router from 'umi/router';
-import { apiPrefix } from '@platformConfig';
+// import { apiPrefix } from '@platformConfig';
+
+const apiPrefix = process.env.apiUrl;
 
 const codeMessage = {
     200: '服务器成功返回请求的数据。',
